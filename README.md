@@ -12,6 +12,12 @@ It is designed to run on Vercel Hobby with Supabase Free, and it turns GitHub re
 - Sends the message to Feishu users or groups
 - Records delivery state for retries and audit
 
+## API routes
+
+- `POST /api/releases` for GitHub Actions or release pipelines
+- `POST /api/webhooks/github` for GitHub release webhooks
+- `GET /api/health` for uptime checks
+
 ## Suggested stack
 
 - Vercel Hobby for serverless API routes and scheduled jobs

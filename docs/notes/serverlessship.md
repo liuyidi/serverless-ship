@@ -47,6 +47,12 @@ flowchart LR
 - Send the message to the target Feishu recipient
 - Record delivery state for retries and audit
 
+## API entry points
+
+- `GET /api/health` for uptime checks
+- `POST /api/releases` for direct GitHub Actions or release pipeline calls
+- `POST /api/webhooks/github` for GitHub release and workflow-run webhooks
+
 ## Suggested MVP data
 
 - `projects`: minibot and future services
