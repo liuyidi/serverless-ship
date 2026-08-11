@@ -1,0 +1,25 @@
+# ServerlessShip
+
+**Serverless Feishu deploy notifier for minibot**
+
+ServerlessShip is a lightweight serverless service for minibot deployment notifications.
+It is designed to run on Vercel Hobby with Supabase Free, and it turns GitHub release or deploy events into Feishu notifications.
+
+## What it does
+
+- Receives deployment completion events
+- Formats a release notification card
+- Sends the message to Feishu users or groups
+- Records delivery state for retries and audit
+
+## Suggested stack
+
+- Vercel Hobby for serverless API routes and scheduled jobs
+- Supabase Free for persistence and lightweight state
+- GitHub Actions for release or deployment triggers
+- Feishu OpenAPI for delivery
+
+## Docs
+
+- [`docs/README.md`](./docs/README.md)
+- [`docs/notes/serverlessship.md`](./docs/notes/serverlessship.md)
