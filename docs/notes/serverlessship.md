@@ -53,6 +53,19 @@ flowchart LR
 - `POST /api/releases` for direct GitHub Actions or release pipeline calls
 - `POST /api/webhooks/github` for GitHub release and workflow-run webhooks
 
+## Deployment workflow
+
+- Pushes to `main` can deploy to Vercel through the included GitHub Actions workflow
+- The workflow uses `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID`
+- The custom domain `serverless-ship.liuyidi.me` is mapped to the project and should serve the production deployment
+
+## Feishu app message mode
+
+- Set `FEISHU_APP_ID` and `FEISHU_APP_SECRET` to enable app identity delivery
+- Set either `FEISHU_TARGET_OPEN_ID` or `FEISHU_TARGET_CHAT_ID`
+- Optionally set `FEISHU_TARGET_ID_TYPE` to `open_id`, `user_id`, or `chat_id`
+- If `FEISHU_WEBHOOK_URL` is also present, webhook delivery still works as a fallback path
+
 ## Suggested MVP data
 
 - `projects`: minibot and future services

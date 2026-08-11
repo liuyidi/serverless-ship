@@ -10,6 +10,7 @@ export type Env = {
   feishuAppSecret: string | null;
   feishuTargetChatId: string | null;
   feishuTargetOpenId: string | null;
+  feishuTargetIdType: string | null;
   supabaseUrl: string | null;
   supabaseServiceRoleKey: string | null;
 };
@@ -36,6 +37,7 @@ export function getEnv(): Env {
     feishuAppSecret: read("FEISHU_APP_SECRET"),
     feishuTargetChatId: read("FEISHU_TARGET_CHAT_ID"),
     feishuTargetOpenId: read("FEISHU_TARGET_OPEN_ID"),
+    feishuTargetIdType: read("FEISHU_TARGET_ID_TYPE"),
     supabaseUrl: read("SUPABASE_URL"),
     supabaseServiceRoleKey: read("SUPABASE_SERVICE_ROLE_KEY"),
   };

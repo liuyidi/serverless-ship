@@ -18,6 +18,18 @@ It is designed to run on Vercel Hobby with Supabase Free, and it turns GitHub re
 - `POST /api/webhooks/github` for GitHub release webhooks
 - `GET /api/health` for uptime checks
 
+## GitHub Actions
+
+The repository includes a production deploy workflow at
+[`/.github/workflows/deploy-to-vercel.yml`](./.github/workflows/deploy-to-vercel.yml).
+It expects these secrets:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+For release notifications from another repo, call `POST /api/releases` with the release payload.
+
 ## Suggested stack
 
 - Vercel Hobby for serverless API routes and scheduled jobs
