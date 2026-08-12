@@ -263,7 +263,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <p className="foot">{locale === "zh" ? "ServerlessShip 目前用于 minibot 的发布通知链路。" : "ServerlessShip currently powers the minibot release notification path."}</p>
+      <p className="foot">
+        {locale === "zh" ? "ServerlessShip 目前用于 minibot 的发布通知链路。" : "ServerlessShip currently powers the minibot release notification path."}{" "}
+        <a className="footLink" href="/supabase">
+          {locale === "zh" ? "查看 Supabase 初始化状态" : "View Supabase init status"}
+        </a>
+      </p>
     </main>
   );
 }

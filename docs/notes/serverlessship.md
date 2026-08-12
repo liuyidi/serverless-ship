@@ -68,11 +68,14 @@ flowchart LR
 
 ## Suggested MVP data
 
-- `projects`: minibot and future services
-- `targets`: Feishu users, groups, or both
-- `releases`: version, tag, build URL, status
+- `projects`: one row per business or deployment target
+- `releases`: version, tag, release URL, workflow URL, status
 - `deliveries`: one row per notification attempt
-- `oauth_tokens` or `app_tokens`: Feishu access state
+
+The current implementation uses the first three tables only. RLS is enabled on
+those tables and access stays server-side through the Supabase service role.
+`targets` and Feishu token persistence can be added later if the service needs
+user- or group-specific routing state in Supabase.
 
 ## What this intentionally does not do
 

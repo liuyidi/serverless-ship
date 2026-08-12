@@ -228,7 +228,7 @@ main.homePage {
   margin: 16px 0 12px;
   font-size: clamp(42px, 7vw, 72px);
   line-height: 0.94;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
 }
 
 .heroLead {
@@ -328,6 +328,10 @@ main.homePage {
 
 .sectionLabel {
   margin-bottom: 16px;
+}
+
+.sectionHead.compact .sectionKicker {
+  white-space: nowrap;
 }
 
 .flowScroll {
@@ -515,9 +519,301 @@ main.homePage {
 
 .foot {
   margin: 2px 0 0;
+  padding-left: 24px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.footLink {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.footLink:hover {
+  text-decoration: underline;
+}
+
+.statusPage {
+  width: min(1200px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0 72px;
+  display: grid;
+  gap: 18px;
+}
+
+.statusHero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 28px;
+}
+
+.statusHeroCopy {
+  max-width: 720px;
+}
+
+.statusHeroCopy h1 {
+  margin: 14px 0 10px;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.statusHeroCopy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.statusHeroAside {
+  display: grid;
+  gap: 12px;
+  min-width: 260px;
+  align-content: start;
+}
+
+.statusMetric {
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 34px rgba(24, 24, 27, 0.04);
+}
+
+.statusMetricValue {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.statusMetricLabel {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.statusBadge.ready {
+  color: var(--green);
+  background: rgba(21, 128, 61, 0.12);
+}
+
+.statusBadge.warn {
+  color: var(--orange);
+  background: rgba(194, 65, 12, 0.12);
+}
+
+.statusBadgeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.statusMeta {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.statusCard {
+  padding: 22px;
+  border-radius: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+}
+
+.statusCardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.statusCardIcon {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--accent);
+  flex: none;
+}
+
+.statusCardHead h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.statusCardHead p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.statusList,
+.statusCommandList {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: grid;
+  gap: 12px;
+}
+
+.statusList li,
+.statusCommandList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+}
+
+.statusList span {
+  color: var(--muted);
+}
+
+.statusList strong {
+  font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+}
+
+.statusCommandList code {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.statusTable {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+}
+
+.statusRowMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.statusIcon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.statusIcon.ok {
+  color: var(--green);
+}
+
+.statusIcon.warn {
+  color: var(--orange);
+}
+
+.statusRowTitle {
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.statusRowDetail {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.statusRowMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.statusPill.ready {
+  color: var(--green);
+  background: rgba(21, 128, 61, 0.12);
+}
+
+.statusPill.missing {
+  color: var(--orange);
+  background: rgba(194, 65, 12, 0.12);
+}
+
+.statusPill.unauthorized,
+.statusPill.error,
+.statusPill.unconfigured {
+  color: var(--muted);
+  background: rgba(113, 113, 122, 0.14);
+}
+
+.statusNote {
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.statusLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.statusLinks a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.statusLinks a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 1120px) {
@@ -528,6 +824,10 @@ main.homePage {
 
   .moduleGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
   }
 
   .stackBanner {
@@ -548,9 +848,16 @@ main.homePage {
     padding: 16px 0 28px;
   }
 
+  .statusPage {
+    width: min(100vw - 20px, 1200px);
+    padding: 16px 0 28px;
+  }
+
   .hero,
   .sectionCard,
-  .stackBanner {
+  .stackBanner,
+  .statusCard,
+  .statusHero {
     padding: 18px;
     border-radius: 22px;
   }
@@ -571,6 +878,27 @@ main.homePage {
 
   .moduleGrid {
     grid-template-columns: 1fr;
+  }
+
+  .statusHero,
+  .statusRow,
+  .statusList li,
+  .statusCommandList li {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statusHeroAside {
+    min-width: 0;
+  }
+
+  .statusRowMeta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .foot {
+    padding-left: 18px;
   }
 
 }

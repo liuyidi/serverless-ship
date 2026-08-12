@@ -21,6 +21,40 @@ This page is the final production checklist for ServerlessShip.
 | `FEISHU_TARGET_ID_TYPE` | Vercel Project Settings > Environment Variables | Manual | Usually `open_id`; keep this aligned with the target ID |
 | `FEISHU_WEBHOOK_URL` | Vercel Project Settings > Environment Variables | Feishu incoming webhook URL | Optional legacy fallback |
 
+### Supabase schema
+
+This repository now carries the base schema in:
+
+- `supabase/migrations/20260812000000_init_serverlessship.sql`
+
+The migration creates the tables used by the current server code:
+
+- `projects`
+- `releases`
+- `deliveries`
+
+Apply it with the Supabase CLI:
+
+```bash
+supabase login
+supabase link --project-ref sxzqroltcqtzrvnhlufz
+supabase db push
+```
+
+RLS is enabled in a follow-up migration, but the current access pattern stays
+server-side only through the Supabase service role. That keeps the tables
+protected until a future user-facing policy is needed.
+
+### Supabase status page
+
+Use the live probe when you want to confirm the remote database after a push:
+
+- `GET /supabase` for the human-readable status page
+- `GET /api/supabase/status` for JSON output in CI or curl
+
+If a table shows `missing`, the migration has not been applied to the linked
+project yet.
+
 ### GitHub Actions caller
 
 | Variable | Where to set | Value source | Notes |
