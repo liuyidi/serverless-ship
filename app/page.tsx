@@ -4,7 +4,6 @@ import {
   Braces,
   Database,
   GitBranch,
-  MessageSquareText,
   LayoutGrid,
   Ship,
   Sparkles,
@@ -12,7 +11,7 @@ import {
   Workflow,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { apiCards, copy, moduleCards, type Locale } from "@/lib/i18n";
 import { DEFAULT_THEME, isThemeMode, THEME_STORAGE_KEY, themeOptions, type ThemeMode } from "@/lib/theme";
 
@@ -22,6 +21,32 @@ function ThemeIcon({ mode, className }: { mode: ThemeMode; className?: string })
   }
 
   return <Sparkles className={className} aria-hidden="true" />;
+}
+
+type FlowIcon = LucideIcon | ComponentType<{ className?: string; size?: number; strokeWidth?: number }>;
+
+function FeishuAppMark({ className, size = 28, strokeWidth = 1.9 }: { className?: string; size?: number; strokeWidth?: number }) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5.5 6.5h13a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H11.2L8 18.6V15.5H5.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M8.3 10h7.4" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
+      <path d="M8.3 12.8h5.4" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
+      <path d="M8.3 15.6h3.4" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
+    </svg>
+  );
 }
 
 function FlowBoard({ locale }: { locale: Locale }) {
@@ -50,7 +75,7 @@ function FlowBoard({ locale }: { locale: Locale }) {
       <FlowConnector />
 
       <div className="flowColumn flowColumnCenter">
-        <StageCard accent="orange" icon={MessageSquareText} title={t.flowLabels.feishu} subtitle="message card" />
+        <StageCard accent="orange" icon={FeishuAppMark} title={t.flowLabels.feishu} subtitle="message card" />
       </div>
     </div>
   );
@@ -71,7 +96,7 @@ function StageCard({
   subtitle,
 }: {
   accent: "dark" | "teal" | "ink" | "orange" | "green";
-  icon: LucideIcon;
+  icon: FlowIcon;
   title: string;
   subtitle: string;
 }) {
@@ -80,7 +105,7 @@ function StageCard({
   return (
     <div className="stageCard">
       <div className={`stageIcon ${accent}`}>
-        <Icon size={28} strokeWidth={1.8} aria-hidden="true" />
+        <Icon className="stageIconGlyph" size={28} strokeWidth={1.8} aria-hidden="true" />
       </div>
       <div className="stageTitle">{title}</div>
       <div className="stageSubtitle">{subtitle}</div>

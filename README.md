@@ -2,34 +2,45 @@
 
 **Serverless Feishu deploy notifier for minibot**
 
-ServerlessShip is a lightweight serverless service for minibot deployment notifications.
-It is designed to run on Vercel Hobby with Supabase Free, and it turns GitHub release or deploy events into Feishu notifications.
+ServerlessShip is a lightweight serverless service for minibot deployment notifications. It runs on Vercel Hobby, uses Supabase Free for state, and turns GitHub release or deploy events into Feishu app messages.
+
+## What you see on the homepage
+
+The landing page is bilingual and centers the delivery loop:
+
+- User
+- GitHub
+- GitHub Actions
+- ServerlessShip
+- Supabase
+- Feishu app message
+- Message card returned to the user
 
 ## Current infrastructure
 
 - Production site: [https://serverless-ship.liuyidi.me](https://serverless-ship.liuyidi.me)
 - Vercel project: `serverless-ship`
 - Supabase project URL: [https://sxzqroltcqtzrvnhlufz.supabase.co](https://sxzqroltcqtzrvnhlufz.supabase.co)
-- Supabase database: managed through the Supabase dashboard for this project
-- Supabase keys used by the app: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`
-
-## What it does
-
-- Receives deployment completion events
-- Formats a release notification card
-- Sends the message to Feishu users or groups
-- Records delivery state for retries and audit
+- Deployment target: Vercel Hobby
+- Persistence layer: Supabase Free
 
 ## API routes
 
-- `POST /api/releases` for GitHub Actions or release pipelines
-- `POST /api/webhooks/github` for GitHub release webhooks
 - `GET /api/health` for uptime checks
+- `POST /api/releases` for release sync
+- `POST /api/webhooks/github` for GitHub webhook delivery
+
+## Runtime responsibilities
+
+- `lib/github-webhook.ts`: normalize GitHub webhook payloads
+- `lib/card.ts`: build Feishu app message cards
+- `lib/feishu.ts`: send Feishu app messages
+- `lib/supabase.ts`: read and write release state
+- `lib/env.ts`: centralize environment access
 
 ## GitHub Actions
 
-The repository includes a production deploy workflow at
-[`/.github/workflows/deploy-to-vercel.yml`](./.github/workflows/deploy-to-vercel.yml).
+The repository includes a production deploy workflow at `/.github/workflows/deploy-to-vercel.yml`.
 It expects these secrets:
 
 - `VERCEL_TOKEN`
@@ -37,13 +48,6 @@ It expects these secrets:
 - `VERCEL_PROJECT_ID`
 
 For release notifications from another repo, call `POST /api/releases` with the release payload.
-
-## Suggested stack
-
-- Vercel Hobby for serverless API routes and scheduled jobs
-- Supabase Free for persistence and lightweight state
-- GitHub Actions for release or deployment triggers
-- Feishu OpenAPI for delivery
 
 ## Docs
 
