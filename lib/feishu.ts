@@ -63,7 +63,10 @@ async function getTenantAccessToken() {
   });
 
   if (!response.ok) {
-    throw new Error(`Feishu token request failed: ${response.status} ${response.statusText}`);
+    const detail = await response.text();
+    throw new Error(
+      `Feishu token request failed: ${response.status} ${response.statusText}${detail ? ` - ${detail}` : ""}`,
+    );
   }
 
   const payload = (await response.json()) as TenantAccessTokenResponse;
@@ -81,16 +84,13 @@ async function getTenantAccessToken() {
 
 async function postFeishuAppMessage(input: ReleaseCardInput) {
   const env = getEnv();
-  const receiveId = env.feishuTargetChatId ?? env.feishuTargetOpenId;
+  const receiveIdType = env.feishuTargetIdType ?? "open_id";
+  const receiveId = env.feishuTargetOpenId;
 
   if (!receiveId) {
-    throw new Error(
-      "FEISHU_TARGET_CHAT_ID or FEISHU_TARGET_OPEN_ID is required for app message delivery",
-    );
+    throw new Error("FEISHU_TARGET_OPEN_ID is required for Feishu app message delivery");
   }
 
-  const receiveIdType =
-    env.feishuTargetIdType ?? (env.feishuTargetChatId ? "chat_id" : "open_id");
   const token = await getTenantAccessToken();
   const content = buildFeishuInteractiveCard(input);
   const payload: FeishuInteractivePayload = {
@@ -114,7 +114,10 @@ async function postFeishuAppMessage(input: ReleaseCardInput) {
   );
 
   if (!response.ok) {
-    throw new Error(`Feishu app message request failed: ${response.status} ${response.statusText}`);
+    const detail = await response.text();
+    throw new Error(
+      `Feishu app message request failed: ${response.status} ${response.statusText}${detail ? ` - ${detail}` : ""}`,
+    );
   }
 }
 

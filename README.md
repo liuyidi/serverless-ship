@@ -5,6 +5,14 @@
 ServerlessShip is a lightweight serverless service for minibot deployment notifications.
 It is designed to run on Vercel Hobby with Supabase Free, and it turns GitHub release or deploy events into Feishu notifications.
 
+## Current infrastructure
+
+- Production site: [https://serverless-ship.liuyidi.me](https://serverless-ship.liuyidi.me)
+- Vercel project: `serverless-ship`
+- Supabase project URL: [https://sxzqroltcqtzrvnhlufz.supabase.co](https://sxzqroltcqtzrvnhlufz.supabase.co)
+- Supabase database: managed through the Supabase dashboard for this project
+- Supabase keys used by the app: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`
+
 ## What it does
 
 - Receives deployment completion events
@@ -41,3 +49,4 @@ For release notifications from another repo, call `POST /api/releases` with the 
 
 - [`docs/README.md`](./docs/README.md)
 - [`docs/notes/serverlessship.md`](./docs/notes/serverlessship.md)
+- [`docs/deployment.md`](./docs/deployment.md)

@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy:vercel": "npx vercel deploy --prod --yes",
+    "deploy:vercel:preview": "npx vercel deploy --yes"
   },
   "dependencies": {
     "next": "^16.0.0",

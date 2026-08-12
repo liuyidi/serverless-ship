@@ -38,6 +38,10 @@ async function upsertProject() {
     ]),
   });
 
+  if (response.status === 404) {
+    return null;
+  }
+
   if (!response.ok) {
     throw new Error(`Failed to upsert project: ${response.status} ${response.statusText}`);
   }
@@ -68,6 +72,10 @@ export async function recordRelease(input: ReleaseCardInput, status: string) {
     ]),
   });
 
+  if (response.status === 404) {
+    return null;
+  }
+
   if (!response.ok) {
     throw new Error(`Failed to record release: ${response.status} ${response.statusText}`);
   }
@@ -92,6 +100,10 @@ export async function recordDelivery(releaseId: string, status: string, errorMes
       },
     ]),
   });
+
+  if (response.status === 404) {
+    return null;
+  }
 
   if (!response.ok) {
     throw new Error(`Failed to record delivery: ${response.status} ${response.statusText}`);
