@@ -1,0 +1,189 @@
+<div style="padding:24px 20px 28px; max-width:1260px; margin:0 auto;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:14px;">
+    <div>
+      <div class="label">Flow map motion</div>
+      <h2 style="margin:8px 0 0;">闭环链路架构图</h2>
+    </div>
+    <div class="mock-button" style="border-radius:999px; padding:8px 12px; font-size:12px;">layered view</div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Architecture preview</div>
+    <div class="mockup-body" style="padding:20px 18px 16px;">
+      <div style="position:relative; min-height:560px; border-radius:28px; background:
+        linear-gradient(180deg, rgba(20,24,31,.03), rgba(20,24,31,.01));
+        overflow:hidden; border:1px solid rgba(0,0,0,.06);">
+        <svg viewBox="0 0 1240 560" width="100%" height="100%" style="position:absolute; inset:0;">
+          <defs>
+            <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="rgba(17,24,39,.05)" stroke-width="1" />
+            </pattern>
+            <linearGradient id="track" x1="0" x2="1">
+              <stop offset="0%" stop-color="#111827" stop-opacity=".16" />
+              <stop offset="50%" stop-color="#111827" stop-opacity=".45" />
+              <stop offset="100%" stop-color="#111827" stop-opacity=".16" />
+            </linearGradient>
+            <linearGradient id="pulse" x1="0" x2="1">
+              <stop offset="0%" stop-color="#3b82f6" />
+              <stop offset="100%" stop-color="#14b8a6" />
+            </linearGradient>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827" fill-opacity=".62" />
+            </marker>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <rect x="0" y="0" width="1240" height="560" fill="url(#grid)" />
+
+          <rect x="46" y="44" width="1148" height="122" rx="24" fill="rgba(255,255,255,.66)" stroke="rgba(17,24,39,.06)" />
+          <rect x="46" y="212" width="1148" height="122" rx="24" fill="rgba(255,255,255,.66)" stroke="rgba(17,24,39,.06)" />
+          <rect x="46" y="380" width="1148" height="122" rx="24" fill="rgba(255,255,255,.66)" stroke="rgba(17,24,39,.06)" />
+
+          <path d="M 190 105 H 314" fill="none" stroke="url(#track)" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)" />
+          <path d="M 430 105 H 556" fill="none" stroke="url(#track)" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)" />
+          <path d="M 624 105 H 760" fill="none" stroke="url(#track)" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)" />
+          <path d="M 832 105 H 986" fill="none" stroke="url(#track)" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)" />
+          <path d="M 1034 105 H 1108" fill="none" stroke="url(#track)" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)" />
+
+          <path d="M 1036 105 C 1134 105, 1134 436, 1036 436 H 190 C 110 436, 110 210, 190 210"
+                fill="none" stroke="url(#track)" stroke-width="8" stroke-linecap="round" stroke-dasharray="10 10" marker-end="url(#arrow)" />
+
+          <path d="M 190 105 H 314" fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14">
+            <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4.8s" repeatCount="indefinite" />
+          </path>
+          <path d="M 430 105 H 556" fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14">
+            <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4.8s" repeatCount="indefinite" />
+          </path>
+          <path d="M 624 105 H 760" fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14">
+            <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4.8s" repeatCount="indefinite" />
+          </path>
+          <path d="M 832 105 H 986" fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14">
+            <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4.8s" repeatCount="indefinite" />
+          </path>
+          <path d="M 1034 105 H 1108" fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14">
+            <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4.8s" repeatCount="indefinite" />
+          </path>
+          <path d="M 1036 105 C 1134 105, 1134 436, 1036 436 H 190 C 110 436, 110 210, 190 210"
+                fill="none" stroke="url(#pulse)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="10 14" filter="url(#glow)">
+            <animate attributeName="stroke-dashoffset" from="0" to="-460" dur="5.6s" repeatCount="indefinite" />
+          </path>
+
+          <path d="M 744 272 C 744 214, 744 180, 744 156" fill="none" stroke="rgba(17,24,39,.16)" stroke-width="2.5" stroke-dasharray="6 8" marker-end="url(#arrow)" />
+          <path d="M 744 272 C 744 214, 744 180, 744 156" fill="none" stroke="url(#pulse)" stroke-width="2.6" stroke-dasharray="6 8" filter="url(#glow)">
+            <animate attributeName="stroke-dashoffset" from="0" to="-160" dur="4.2s" repeatCount="indefinite" />
+          </path>
+
+          <circle cx="190" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="366" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="580" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="786" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="1010" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="1110" cy="105" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="744" cy="272" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="190" cy="436" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+          <circle cx="1010" cy="436" r="10" fill="#fff" stroke="#111827" stroke-width="2" />
+
+          <circle r="9" fill="#22c55e" filter="url(#glow)">
+            <animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto">
+              <mpath href="#pathMotion" />
+            </animateMotion>
+          </circle>
+          <path id="pathMotion" d="M 190 105 H 314 H 556 H 760 H 986 H 1108 C 1134 105, 1134 436, 1036 436 H 190 C 110 436, 110 210, 190 210"
+                fill="none" stroke="transparent" />
+        </svg>
+
+        <div style="position:absolute; left:66px; top:58px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:rgba(17,24,39,.42); font-weight:700;">Trigger</div>
+        <div style="position:absolute; left:66px; top:226px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:rgba(17,24,39,.42); font-weight:700;">Core</div>
+        <div style="position:absolute; left:66px; top:394px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:rgba(17,24,39,.42); font-weight:700;">Delivery</div>
+
+        <div style="position:absolute; left:70px; top:70px; width:150px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; background:#111827; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5 20c0-3.2 3.1-5.5 7-5.5s7 2.3 7 5.5" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">User</div>
+          <div class="subtitle">push code</div>
+        </div>
+
+        <div style="position:absolute; left:282px; top:70px; width:170px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:16px; background:#111827; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.65.5.5 5.73.5 12.19c0 5.15 3.29 9.52 7.85 11.06.58.11.8-.26.8-.57 0-.28-.01-1.02-.02-2-3.2.71-3.88-1.4-3.88-1.4-.52-1.35-1.27-1.7-1.27-1.7-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.2 1.76 1.2 1.02 1.79 2.67 1.27 3.32.97.1-.76.4-1.27.73-1.57-2.57-.3-5.27-1.32-5.27-5.86 0-1.29.44-2.34 1.16-3.16-.12-.29-.5-1.5.11-3.12 0 0 .96-.31 3.15 1.2.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.18-1.51 3.14-1.2 3.14-1.2.62 1.62.24 2.83.12 3.12.72.82 1.15 1.87 1.15 3.16 0 4.56-2.71 5.56-5.29 5.85.41.36.78 1.08.78 2.18 0 1.57-.02 2.83-.02 3.22 0 .31.21.69.81.57 4.55-1.54 7.84-5.91 7.84-11.06C23.5 5.73 18.35.5 12 .5Z"/>
+            </svg>
+          </div>
+          <div style="font-weight:700;">GitHub</div>
+          <div class="subtitle">repo / release / webhook</div>
+        </div>
+
+        <div style="position:absolute; left:498px; top:70px; width:180px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:16px; background:#0f766e; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4.5" y="4.5" width="15" height="15" rx="3" />
+              <path d="M6 12h12" />
+              <path d="M7 8l4 4-4 4" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">Actions</div>
+          <div class="subtitle">build + deploy + notify</div>
+        </div>
+
+        <div style="position:absolute; left:708px; top:54px; width:210px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:58px; height:58px; border-radius:16px; background:#111827; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17.5 12 6l5 11.5" />
+              <path d="M9.2 13h5.6" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">ServerlessShip</div>
+          <div class="subtitle">route + format + log</div>
+        </div>
+
+        <div style="position:absolute; left:938px; top:54px; width:170px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:16px; background:#ea580c; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 15.5c0-3.7 2.8-7 6-7s6 3.3 6 7" />
+              <path d="M8 12.5h8" />
+              <path d="M9.5 18.3h5" />
+              <path d="M7 6.5h10" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">Feishu App</div>
+          <div class="subtitle">message card</div>
+        </div>
+
+        <div style="position:absolute; left:990px; top:408px; width:160px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:18px; background:#111827; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.5" y="4.5" width="17" height="13" rx="2.5" />
+              <path d="M6 8h12" />
+              <path d="M6 11h8" />
+              <path d="M7 18l3-2h7" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">Message</div>
+          <div class="subtitle">receives result</div>
+        </div>
+
+        <div style="position:absolute; left:690px; top:404px; width:190px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:16px; background:#16a34a; color:#fff; margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4.5 17.5c3.6-2.7 6.5-4 8.6-4 2.5 0 4.6 1.2 6.4 3.6" />
+              <path d="M7 13.5c2.2-1.7 3.9-2.5 5.2-2.5 1.6 0 3 .7 4.2 2" />
+              <path d="M9.5 9.2c1.2-1 2.3-1.5 3.4-1.5 1.3 0 2.6.5 3.8 1.6" />
+            </svg>
+          </div>
+          <div style="font-weight:700;">Supabase</div>
+          <div class="subtitle">serverless storage</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

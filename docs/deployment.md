@@ -49,8 +49,7 @@ protected until a future user-facing policy is needed.
 
 Use the live probe when you want to confirm the remote database after a push:
 
-- `GET /supabase` for the human-readable status page
-- `GET /api/supabase/status` for JSON output in CI or curl
+- `GET /dashboard/supabase` for the human-readable status page
 
 If a table shows `missing`, the migration has not been applied to the linked
 project yet.

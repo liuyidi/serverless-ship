@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { sendReleaseNotification } from "@/lib/feishu";
 import type { ReleaseCardInput } from "@/lib/card";
-import { recordDelivery, recordRelease } from "@/lib/supabase";
+import { recordDelivery, recordRelease, updateReleaseStatus } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   let payload: ReleaseCardInput;
@@ -23,6 +23,7 @@ export async function POST(request: Request) {
     const delivery = await sendReleaseNotification(payload);
     if (releaseRecord?.id) {
       await recordDelivery(releaseRecord.id, "sent", null);
+      await updateReleaseStatus(releaseRecord.id, "sent");
     }
     return Response.json({ ok: true, delivered: true, delivery });
   } catch (error) {
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
       }
       if (releaseRecord?.id) {
         await recordDelivery(releaseRecord.id, "failed", message);
+        await updateReleaseStatus(releaseRecord.id, "failed");
       }
     } catch {
       // Persistence must never block notification delivery.

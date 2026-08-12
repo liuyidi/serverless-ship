@@ -1,10 +1,10 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-import { getSupabaseInitStatus } from "@/lib/supabase-status";
+import { getAdminSupabaseStatus } from "@/app/dashboard/_server/api/supabase-status";
 
 export async function GET() {
-  const status = await getSupabaseInitStatus();
+  const status = await getAdminSupabaseStatus();
 
   return Response.json(status, {
     headers: {

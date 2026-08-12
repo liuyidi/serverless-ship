@@ -1,7 +1,5 @@
-export const dynamic = "force-dynamic";
-
-import { CircleAlert, CircleCheckBig, Database, ExternalLink, ShieldCheck, TerminalSquare } from "lucide-react";
 import Link from "next/link";
+import { CircleAlert, CircleCheckBig, Database, ExternalLink, ShieldCheck, TerminalSquare } from "lucide-react";
 import { getSupabaseInitStatus } from "@/lib/supabase-status";
 
 function StatusIcon({ ok }: { ok: boolean }) {
@@ -20,7 +18,7 @@ function TableStatePill({ state }: { state: "ready" | "missing" | "unauthorized"
   return <span className={`statusPill ${state}`}>{labelMap[state]}</span>;
 }
 
-export default async function SupabaseStatusPage() {
+export default async function AdminSupabaseStatusPage() {
   const status = await getSupabaseInitStatus();
   const readyCount = status.tableProbes.filter((probe) => probe.ok).length;
 
@@ -28,7 +26,7 @@ export default async function SupabaseStatusPage() {
     <main className="statusPage">
       <section className="statusHero sectionCard">
         <div className="statusHeroCopy">
-          <div className="sectionKicker">Supabase init status</div>
+          <div className="sectionKicker">Dashboard / Supabase init status</div>
           <h1>Supabase 初始化状态</h1>
           <p>
             This page checks whether ServerlessShip can reach Supabase and whether the core tables
@@ -98,8 +96,8 @@ export default async function SupabaseStatusPage() {
         <div className="statusCardHead">
           <ShieldCheck className="statusCardIcon" aria-hidden="true" />
           <div>
-            <h2>Table probes</h2>
-            <p>Checks whether the three tables used by the current code are reachable through REST.</p>
+            <h2>Resource probes</h2>
+            <p>Checks whether the three tables and the deployments dashboard view are reachable through REST.</p>
           </div>
         </div>
 
@@ -128,7 +126,7 @@ export default async function SupabaseStatusPage() {
           <div>
             <h2>Next steps</h2>
             <p>
-              If any table shows <strong>missing</strong>, run the migration push again after checking
+              If any resource shows <strong>missing</strong>, run the migration push again after checking
               the Supabase link and project ref.
             </p>
           </div>
@@ -140,8 +138,9 @@ export default async function SupabaseStatusPage() {
         </p>
 
         <div className="statusLinks">
-          <Link href="/api/supabase/status">JSON status</Link>
-          <Link href="/">Back to home</Link>
+          <Link className="adminGhostLink" href="/dashboard/deployments">
+            Back to dashboard
+          </Link>
         </div>
       </section>
     </main>

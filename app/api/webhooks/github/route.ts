@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { sendReleaseNotification } from "@/lib/feishu";
 import { toReleaseNotification, verifyGithubSignature } from "@/lib/github-webhook";
-import { recordDelivery, recordRelease } from "@/lib/supabase";
+import { recordDelivery, recordRelease, updateReleaseStatus } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
     const delivery = await sendReleaseNotification(notification);
     if (releaseRecord?.id) {
       await recordDelivery(releaseRecord.id, "sent", null);
+      await updateReleaseStatus(releaseRecord.id, "sent");
     }
     return Response.json({ ok: true, delivered: true, delivery });
   } catch (error) {
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       }
       if (releaseRecord?.id) {
         await recordDelivery(releaseRecord.id, "failed", message);
+        await updateReleaseStatus(releaseRecord.id, "failed");
       }
     } catch {
       // Persistence must never block notification delivery.

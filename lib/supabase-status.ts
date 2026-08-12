@@ -1,6 +1,6 @@
 import { getEnv } from "@/lib/env";
 
-export type SupabaseTableName = "projects" | "releases" | "deliveries";
+export type SupabaseTableName = "projects" | "releases" | "deliveries" | "deployments_dashboard";
 
 export type SupabaseTableProbe = {
   table: SupabaseTableName;
@@ -21,7 +21,7 @@ export type SupabaseInitStatus = {
   commands: string[];
 };
 
-const TABLES: SupabaseTableName[] = ["projects", "releases", "deliveries"];
+const TABLES: SupabaseTableName[] = ["projects", "releases", "deliveries", "deployments_dashboard"];
 
 function baseUrlFromEnv() {
   const env = getEnv();

@@ -255,20 +255,17 @@ export default function HomePage() {
           <h2>{locale === "zh" ? "专门给部署消息做的轻量服务" : "A lightweight service built specifically for deployment notifications"}</h2>
         </div>
         <div className="stackRow">
-          {t.stackItems.map((item) => (
-            <span className="tag strong" key={item}>
-              {item}
-            </span>
-          ))}
+          <span className="tag strong">Next.js 16</span>
+          <span className="tag">Supabase</span>
+          <span className="tag">Feishu</span>
+          <span className="tag">GitHub Actions</span>
         </div>
       </section>
 
-      <p className="foot">
-        {locale === "zh" ? "ServerlessShip 目前用于 minibot 的发布通知链路。" : "ServerlessShip currently powers the minibot release notification path."}{" "}
-        <a className="footLink" href="/supabase">
-          {locale === "zh" ? "查看 Supabase 初始化状态" : "View Supabase init status"}
-        </a>
-      </p>
+      <footer className="foot">
+        <span>ServerlessShip</span>
+        <span>{locale === "zh" ? "面向 minibot 的部署通道" : "Deployment relay for minibot"}</span>
+      </footer>
     </main>
   );
 }

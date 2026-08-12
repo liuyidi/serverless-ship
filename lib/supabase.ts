@@ -65,6 +65,7 @@ export async function recordRelease(input: ReleaseCardInput, status: string) {
         project_id: project.id,
         version: input.version,
         tag: input.tag,
+        channel: input.channel,
         release_url: input.releaseUrl,
         workflow_url: input.workflowUrl,
         status,
@@ -78,6 +79,28 @@ export async function recordRelease(input: ReleaseCardInput, status: string) {
 
   if (!response.ok) {
     throw new Error(`Failed to record release: ${response.status} ${response.statusText}`);
+  }
+
+  const rows = (await response.json()) as SupabaseRow[];
+  return rows[0] ?? null;
+}
+
+export async function updateReleaseStatus(releaseId: string, status: string) {
+  const config = supabaseHeaders();
+  if (!config) return null;
+
+  const response = await fetch(`${config.baseUrl}/rest/v1/releases?id=eq.${releaseId}`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify({ status }),
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to update release status: ${response.status} ${response.statusText}`);
   }
 
   const rows = (await response.json()) as SupabaseRow[];
