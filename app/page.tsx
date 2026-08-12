@@ -1,78 +1,244 @@
-const capabilities = [
-  "GitHub release and deploy webhooks",
-  "Feishu notifications for users or groups",
-  "Supabase-backed state and retries",
-  "Vercel serverless API routes",
-];
+"use client";
 
-const stack = [
-  "Vercel Hobby",
-  "Supabase Free",
-  "GitHub Actions",
-  "Feishu OpenAPI",
-];
+import {
+  Braces,
+  Database,
+  GitBranch,
+  MessageSquareText,
+  LayoutGrid,
+  Ship,
+  Sparkles,
+  UserRound,
+  Workflow,
+  type LucideIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiCards, copy, moduleCards, type Locale } from "@/lib/i18n";
+import { DEFAULT_THEME, isThemeMode, THEME_STORAGE_KEY, themeOptions, type ThemeMode } from "@/lib/theme";
+
+function ThemeIcon({ mode, className }: { mode: ThemeMode; className?: string }) {
+  if (mode === "shadcn") {
+    return <LayoutGrid className={className} aria-hidden="true" />;
+  }
+
+  return <Sparkles className={className} aria-hidden="true" />;
+}
+
+function FlowBoard({ locale }: { locale: Locale }) {
+  const t = copy[locale];
+
+  return (
+    <div className="flowPanel flowColumnsFour">
+      <div className="flowColumn flowColumnCenter">
+        <StageCard accent="dark" icon={UserRound} title={t.flowLabels.user} subtitle="push code" />
+      </div>
+
+      <FlowConnector />
+
+      <div className="flowColumn flowColumnStack">
+        <StageCard accent="dark" icon={GitBranch} title={t.flowLabels.github} subtitle="repo / release / webhook" />
+        <StageCard accent="teal" icon={Workflow} title={t.flowLabels.actions} subtitle="build + deploy + notify" />
+      </div>
+
+      <FlowConnector />
+
+      <div className="flowColumn flowColumnStack">
+        <StageCard accent="ink" icon={Ship} title={t.flowLabels.ship} subtitle="route + format + log" />
+        <StageCard accent="green" icon={Database} title={t.flowLabels.supabase} subtitle="serverless storage" />
+      </div>
+
+      <FlowConnector />
+
+      <div className="flowColumn flowColumnCenter">
+        <StageCard accent="orange" icon={MessageSquareText} title={t.flowLabels.feishu} subtitle="message card" />
+      </div>
+    </div>
+  );
+}
+
+function FlowConnector() {
+  return (
+    <div className="flowConnector" aria-hidden="true">
+      <span>&gt;</span>
+    </div>
+  );
+}
+
+function StageCard({
+  accent,
+  icon,
+  title,
+  subtitle,
+}: {
+  accent: "dark" | "teal" | "ink" | "orange" | "green";
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+}) {
+  const Icon = icon;
+
+  return (
+    <div className="stageCard">
+      <div className={`stageIcon ${accent}`}>
+        <Icon size={28} strokeWidth={1.8} aria-hidden="true" />
+      </div>
+      <div className="stageTitle">{title}</div>
+      <div className="stageSubtitle">{subtitle}</div>
+    </div>
+  );
+}
 
 export default function HomePage() {
+  const [locale, setLocale] = useState<Locale>("zh");
+  const [theme, setTheme] = useState<ThemeMode>(DEFAULT_THEME);
+  const [themeReady, setThemeReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+      if (isThemeMode(stored)) {
+        setTheme(stored);
+      }
+    } catch {
+      // Ignore storage access failures and fall back to the default theme.
+    }
+
+    setThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!themeReady) {
+      return;
+    }
+
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+    root.style.colorScheme = "light";
+
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // Ignore storage access failures and keep the in-memory theme active.
+    }
+  }, [theme, themeReady]);
+
+  const t = copy[locale];
+  const api = apiCards[locale];
+  const modules = moduleCards[locale];
+
   return (
-    <main>
-      <div className="shell">
-        <section className="hero">
-          <div className="eyebrow">Serverless Feishu deploy notifier for minibot</div>
-          <h1>ServerlessShip</h1>
-          <p>
-            A lightweight deployment companion that turns minibot release events into polished Feishu
-            notifications, without a long-running backend.
-          </p>
-          <div className="ctaRow">
-            <a className="button primary" href="/api/health">
-              Check health
-            </a>
-            <a className="button secondary" href="https://github.com/liuyidi/serverless-ship">
-              Open GitHub
-            </a>
-          </div>
-        </section>
-
-        <section className="grid two">
-          <article className="card">
-            <h2 className="sectionTitle">What it does</h2>
-            <ul>
-              {capabilities.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </article>
-
-          <article className="card">
-            <h2 className="sectionTitle">Suggested stack</h2>
-            <div className="tagRow" style={{ marginTop: 12 }}>
-              {stack.map((item) => (
-                <span className="tag" key={item}>
-                  {item}
-                </span>
+    <main className="homePage">
+      <section className="hero">
+        <div className="heroTopRow">
+          <div className="eyebrow">{t.badge}</div>
+          <div className="heroControls">
+            <div className="themeSwitch" aria-label="Theme switch">
+              {(["shadcn", "claude"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={theme === mode ? "active" : ""}
+                  onClick={() => setTheme(mode)}
+                  aria-pressed={theme === mode}
+                  title={themeOptions[mode].description}
+                >
+                  <ThemeIcon mode={mode} className="themeSwitchIcon" />
+                </button>
               ))}
             </div>
-            <p style={{ marginTop: 16 }}>
-              The first version stays simple: one deploy source, one notification path, one audit trail.
-            </p>
-          </article>
-        </section>
+            <div className="langSwitch" aria-label="Language switch">
+              <button type="button" className={locale === "zh" ? "active" : ""} onClick={() => setLocale("zh")} aria-pressed={locale === "zh"}>
+                中
+              </button>
+              <button type="button" className={locale === "en" ? "active" : ""} onClick={() => setLocale("en")} aria-pressed={locale === "en"}>
+                EN
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <section className="grid two">
-          <article className="card">
-            <h3>Core flow</h3>
-            <p>GitHub Actions or a manual release event hits Vercel, then ServerlessShip formats and sends the Feishu card.</p>
-          </article>
-          <article className="card">
-            <h3>Data model</h3>
-            <p>Supabase stores projects, notification targets, releases, and delivery attempts for retry and audit.</p>
-          </article>
-        </section>
+        <div className="heroContent">
+          <div>
+            <h1>{t.title}</h1>
+            <p className="heroLead">{t.subtitle}</p>
+            <p className="heroBody">{t.description}</p>
 
-        <p className="foot">
-          Built as a thin serverless layer for minibot release notifications.
-        </p>
-      </div>
+            <div className="ctaRow">
+              <a className="button primary" href="#api">
+                {t.primaryCta}
+              </a>
+              <a className="button secondary" href="https://github.com/liuyidi/serverless-ship" target="_blank" rel="noreferrer">
+                {t.secondaryCta}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sectionCard">
+        <div className="sectionLabel">
+          <div className="sectionKicker">{t.flowTitle}</div>
+        </div>
+
+        <div className="flowScroll">
+          <FlowBoard locale={locale} />
+        </div>
+      </section>
+
+      <section className="twoUp">
+        <article className="sectionCard" id="api">
+          <div className="sectionHead compact">
+            <div className="sectionKicker">{t.apiTitle}</div>
+            <p>{t.apiDescription}</p>
+          </div>
+
+          <div className="apiGrid">
+            {api.map((item) => (
+              <div className="apiCard" key={item.path}>
+                <div className="apiPath">
+                  <Braces size={20} strokeWidth={1.8} aria-hidden="true" />
+                  <span>{item.path}</span>
+                </div>
+                <div className="apiName">{item.title}</div>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="sectionCard">
+          <div className="sectionHead compact">
+            <div className="sectionKicker">{t.moduleTitle}</div>
+            <p>{t.moduleDescription}</p>
+          </div>
+
+          <div className="moduleGrid">
+            {modules.map((item) => (
+              <div className="moduleCard" key={item.name}>
+                <div className="moduleName">{item.name}</div>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="stackBanner">
+        <div>
+          <div className="sectionKicker">{t.stackTitle}</div>
+          <h2>{locale === "zh" ? "专门给部署消息做的轻量服务" : "A lightweight service built specifically for deployment notifications"}</h2>
+        </div>
+        <div className="stackRow">
+          {t.stackItems.map((item) => (
+            <span className="tag strong" key={item}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <p className="foot">{locale === "zh" ? "ServerlessShip 目前用于 minibot 的发布通知链路。" : "ServerlessShip currently powers the minibot release notification path."}</p>
     </main>
   );
 }
