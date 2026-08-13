@@ -982,6 +982,7 @@ html[data-admin-sidebar-collapsed="true"] .adminShell {
   align-content: start;
   width: 100%;
   justify-items: stretch;
+  flex: 1;
 }
 
 .adminNavGroup {
@@ -1124,6 +1125,78 @@ html[data-admin-sidebar-collapsed="true"] .adminShell {
   background: #111827;
   color: #ffffff;
   box-shadow: 0 10px 22px rgba(17, 24, 39, 0.16);
+}
+
+.adminSidebarFooter {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+  padding: 10px 6px 2px;
+}
+
+.adminLocaleLabel {
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0 4px;
+}
+
+.adminLocaleSwitch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.adminLocaleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  color: #52525b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.adminLocaleButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 23, 42, 0.14);
+  background: #ffffff;
+  color: #111827;
+  text-decoration: none;
+}
+
+.adminLocaleButton.active {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.16);
+}
+
+.adminSidebar.collapsed .adminSidebarFooter {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.adminSidebar.collapsed .adminLocaleLabel {
+  display: none;
+}
+
+.adminSidebar.collapsed .adminLocaleSwitch {
+  grid-template-columns: 1fr;
+}
+
+.adminSidebar.collapsed .adminLocaleButton {
+  min-height: 30px;
+  padding: 0 8px;
 }
 
 .adminMain {

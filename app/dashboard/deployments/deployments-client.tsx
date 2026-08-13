@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, startTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { AlertTriangle, ArrowLeft, ArrowRight, Clock3, Filter, SquareArrowOutUpRight, Waves } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock3, Filter, SquareArrowOutUpRight, Waves } from "lucide-react";
 import type { DeploymentListResult, DeploymentRow } from "@/lib/deployments";
+import { buildDashboardHref, dashboardCopy, type DashboardLocale } from "@/lib/dashboard-copy";
 
 const PAGE_SIZE = 20;
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", {
+function formatDate(value: string, locale: DashboardLocale) {
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
     year: "numeric",
     month: "short",
     day: "2-digit",
@@ -22,8 +23,54 @@ function badgeClass(value: string | null) {
   return (value ?? "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }
 
-function StatusBadge({ value }: { value: string | null }) {
-  return <span className={`adminBadge ${badgeClass(value)}`}>{value ?? "unknown"}</span>;
+function translateStatus(value: string | null, locale: DashboardLocale) {
+  if (!value) {
+    return locale === "zh" ? "未知" : "unknown";
+  }
+
+  if (locale === "zh") {
+    switch (value) {
+      case "sent":
+        return "已发送";
+      case "failed":
+        return "失败";
+      case "pending":
+        return "待处理";
+      default:
+        return value;
+    }
+  }
+
+  return value;
+}
+
+function translateChannel(value: string | null, locale: DashboardLocale) {
+  if (!value) {
+    return locale === "zh" ? "未知" : "unknown";
+  }
+
+  if (locale === "zh") {
+    switch (value) {
+      case "GitHub Release":
+        return "GitHub 发布";
+      case "GitHub Workflow":
+        return "GitHub 工作流";
+      default:
+        return value;
+    }
+  }
+
+  return value;
+}
+
+function StatusBadge({
+  value,
+  tone,
+}: {
+  value: string | null;
+  tone?: string | null;
+}) {
+  return <span className={`adminBadge ${badgeClass(tone ?? value)}`}>{value ?? "unknown"}</span>;
 }
 
 function LinkButton({ href, label, external = true }: { href: string; label: string; external?: boolean }) {
@@ -35,8 +82,17 @@ function LinkButton({ href, label, external = true }: { href: string; label: str
   );
 }
 
-function DeploymentRowView({ row }: { row: DeploymentRow }) {
-  const detailHref = `/dashboard/deployments/${row.id}`;
+function DeploymentRowView({
+  row,
+  locale,
+  search,
+}: {
+  row: DeploymentRow;
+  locale: DashboardLocale;
+  search: string;
+}) {
+  const copy = dashboardCopy[locale].deployments;
+  const detailHref = buildDashboardHref(`/dashboard/deployments/${row.id}`, search, locale);
 
   return (
     <tr className="adminTableRow">
@@ -52,25 +108,31 @@ function DeploymentRowView({ row }: { row: DeploymentRow }) {
           <span className="adminMuted">{row.tag ?? "-"}</span>
         </div>
       </td>
-      <td><StatusBadge value={row.channel} /></td>
-      <td><StatusBadge value={row.release_status} /></td>
+      <td>
+        <StatusBadge value={translateChannel(row.channel, locale)} tone={row.channel} />
+      </td>
+      <td>
+        <StatusBadge value={translateStatus(row.release_status, locale)} tone={row.release_status} />
+      </td>
       <td>
         <div className="adminStackedCell">
-          <span className="adminVersion">{formatDate(row.created_at)}</span>
-          <span className="adminMuted">Updated {formatDate(row.updated_at)}</span>
+          <span className="adminVersion">{formatDate(row.created_at, locale)}</span>
+          <span className="adminMuted">
+            {copy.row.updated} {formatDate(row.updated_at, locale)}
+          </span>
         </div>
       </td>
       <td>
         <div className="adminStackedCell">
-          <span className="adminVersion">{row.delivery_status ?? "unknown"}</span>
-          <span className="adminMuted">{row.delivery_error_message ?? "No delivery error"}</span>
+          <span className="adminVersion">{translateStatus(row.delivery_status, locale)}</span>
+          <span className="adminMuted">{row.delivery_error_message ?? copy.row.noDeliveryError}</span>
         </div>
       </td>
       <td>
         <div className="adminActions">
-          {row.release_url ? <LinkButton href={row.release_url} label="Release" /> : null}
-          {row.workflow_url ? <LinkButton href={row.workflow_url} label="Workflow" /> : null}
-          <LinkButton href={detailHref} label="Detail" external={false} />
+          {row.release_url ? <LinkButton href={row.release_url} label={copy.row.release} /> : null}
+          {row.workflow_url ? <LinkButton href={row.workflow_url} label={copy.row.workflow} /> : null}
+          <LinkButton href={detailHref} label={copy.row.detail} external={false} />
         </div>
       </td>
     </tr>
@@ -131,11 +193,12 @@ function DeploymentsSkeleton() {
   );
 }
 
-export function DeploymentsClient() {
+export function DeploymentsClient({ locale }: { locale: DashboardLocale }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
+  const copy = dashboardCopy[locale].deployments;
   const [result, setResult] = useState<DeploymentListResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -177,7 +240,7 @@ export function DeploymentsClient() {
         }
 
         if (mounted) {
-          setError(err instanceof Error ? err.message : "Unknown error");
+          setError(err instanceof Error ? err.message : copy.status.filterError);
         }
       }
     }
@@ -189,11 +252,11 @@ export function DeploymentsClient() {
       mounted = false;
       controller.abort();
     };
-  }, [search]);
+  }, [copy.status.filterError, search]);
 
   const onFilterChange = (nextParams: Record<string, string | number | null | undefined>) => {
     startTransition(() => {
-      router.push(buildHref(pathname, nextParams));
+      router.push(buildHref(pathname, { ...nextParams, lang: locale }));
     });
   };
 
@@ -212,7 +275,8 @@ export function DeploymentsClient() {
   const hasPrev = filters.page > 1;
   const hasNext = filters.page < totalPages;
   const summary = getSummary(result.rows);
-  const deploymentError = result.error?.status === 404 ? "The deployments view is missing from Supabase." : result.error?.message ?? null;
+  const deploymentError =
+    result.error?.status === 404 ? copy.status.deploymentViewMissing : result.error?.message ?? null;
 
   return (
     <>
@@ -233,54 +297,56 @@ export function DeploymentsClient() {
         }}
       >
         <label>
-          <span>Project</span>
-          <input name="project" defaultValue={filters.project} placeholder="minibot desktop" />
+          <span>{copy.filters.project}</span>
+          <input name="project" defaultValue={filters.project} placeholder={copy.filters.projectPlaceholder} />
         </label>
         <label>
-          <span>Channel</span>
-          <input name="channel" defaultValue={filters.channel} placeholder="GitHub Release" />
+          <span>{copy.filters.channel}</span>
+          <input name="channel" defaultValue={filters.channel} placeholder={copy.filters.channelPlaceholder} />
         </label>
         <label>
-          <span>Status</span>
-          <input name="status" defaultValue={filters.status} placeholder="sent / failed / pending" />
+          <span>{copy.filters.status}</span>
+          <input name="status" defaultValue={filters.status} placeholder={copy.filters.statusPlaceholder} />
         </label>
         <label>
-          <span>Keyword</span>
-          <input name="q" defaultValue={filters.q} placeholder="tag, repo, version" />
+          <span>{copy.filters.keyword}</span>
+          <input name="q" defaultValue={filters.q} placeholder={copy.filters.keywordPlaceholder} />
         </label>
         <label>
-          <span>From</span>
+          <span>{copy.filters.from}</span>
           <input name="from" type="date" defaultValue={filters.from} />
         </label>
         <label>
-          <span>To</span>
+          <span>{copy.filters.to}</span>
           <input name="to" type="date" defaultValue={filters.to} />
         </label>
         <div className="adminFilterActions">
           <button type="submit">
             <Filter size={14} aria-hidden="true" />
-            Filter
+            {copy.filters.submit}
           </button>
           <button
             type="button"
             className="adminSecondaryButton"
-            onClick={() => onFilterChange({})}
+            onClick={() => onFilterChange({ lang: locale })}
           >
-            Reset
+            {copy.filters.reset}
           </button>
         </div>
       </form>
 
       <div className="adminTableMeta">
         <div>
-          <div className="adminSectionKicker">Latest first</div>
-          <h2>{result.total} deployments</h2>
-          <p>{summary.latest ? `Latest row: ${formatDate(summary.latest)}` : "No rows match the current filters."}</p>
+          <div className="adminSectionKicker">{copy.table.latestFirst}</div>
+          <h2>
+            {result.total} {copy.table.deployments}
+          </h2>
+          <p>{summary.latest ? `${copy.table.latestRow}${formatDate(summary.latest, locale)}` : copy.table.noRows}</p>
         </div>
         <div className="adminPageMeta">
           <div className="adminPageCount">
             <Clock3 size={14} aria-hidden="true" />
-            Page {filters.page} / {totalPages}
+            {copy.pager.page} {filters.page} / {totalPages}
           </div>
           {deploymentError ? <span className="adminInlineError">{deploymentError}</span> : null}
           {error ? <span className="adminInlineError">{error}</span> : null}
@@ -291,13 +357,13 @@ export function DeploymentsClient() {
         <table className="adminTable">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Version / Tag</th>
-              <th>Channel</th>
-              <th>Status</th>
-              <th>Timestamps</th>
-              <th>Delivery</th>
-              <th>Links</th>
+              <th>{copy.table.headings.project}</th>
+              <th>{copy.table.headings.versionTag}</th>
+              <th>{copy.table.headings.channel}</th>
+              <th>{copy.table.headings.status}</th>
+              <th>{copy.table.headings.timestamps}</th>
+              <th>{copy.table.headings.delivery}</th>
+              <th>{copy.table.headings.links}</th>
             </tr>
           </thead>
           <tbody>
@@ -306,12 +372,12 @@ export function DeploymentsClient() {
                 <td colSpan={7}>
                   <div className="adminEmpty">
                     <Waves size={18} aria-hidden="true" />
-                    <p>{result.error ? "Deployments are temporarily unavailable." : "No deployments match the current filters."}</p>
+                    <p>{result.error ? copy.status.filterError : copy.table.noRows}</p>
                   </div>
                 </td>
               </tr>
             ) : (
-              result.rows.map((row) => <DeploymentRowView key={row.id} row={row} />)
+              result.rows.map((row) => <DeploymentRowView key={row.id} row={row} locale={locale} search={search} />)
             )}
           </tbody>
         </table>
@@ -336,7 +402,7 @@ export function DeploymentsClient() {
           }
         >
           <ArrowLeft size={14} aria-hidden="true" />
-          Previous
+          {copy.pager.previous}
         </button>
         <button
           type="button"
@@ -355,7 +421,7 @@ export function DeploymentsClient() {
             })
           }
         >
-          Next
+          {copy.pager.next}
           <ArrowRight size={14} aria-hidden="true" />
         </button>
       </div>

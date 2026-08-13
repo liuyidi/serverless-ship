@@ -7,7 +7,7 @@ import {
   ExternalLink,
   LayoutDashboard,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { dashboardCopy, type DashboardLocale, buildDashboardHref } from "@/lib/dashboard-copy";
 
 type AdminNavItem = {
   group: string;
@@ -16,33 +16,41 @@ type AdminNavItem = {
   icon: typeof BarChart3;
 };
 
-const navItems: AdminNavItem[] = [
-  {
-    group: "Core",
-    href: "/dashboard/deployments",
-    label: "Deployments",
-    icon: BarChart3,
-  },
-  {
-    group: "Core",
-    href: "/dashboard/supabase",
-    label: "Supabase",
-    icon: Database,
-  },
-  {
-    group: "Public",
-    href: "/",
-    label: "Public site",
-    icon: ExternalLink,
-  },
-];
-
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AdminSidebar({ collapsed }: { collapsed: boolean }) {
-  const pathname = usePathname();
+export function AdminSidebar({
+  collapsed,
+  locale,
+  pathname,
+}: {
+  collapsed: boolean;
+  locale: DashboardLocale;
+  pathname: string;
+}) {
+  const copy = dashboardCopy[locale];
+  const localeSearch = new URLSearchParams({ lang: locale }).toString();
+  const navItems: AdminNavItem[] = [
+    {
+      group: copy.shell.sidebar.groups.core,
+      href: "/dashboard/deployments",
+      label: copy.shell.sidebar.nav.deployments,
+      icon: BarChart3,
+    },
+    {
+      group: copy.shell.sidebar.groups.core,
+      href: "/dashboard/supabase",
+      label: copy.shell.sidebar.nav.supabase,
+      icon: Database,
+    },
+    {
+      group: copy.shell.sidebar.groups.public,
+      href: "/",
+      label: copy.shell.sidebar.nav.publicSite,
+      icon: ExternalLink,
+    },
+  ];
 
   return (
     <aside className={`adminSidebar ${collapsed ? "collapsed" : ""}`}>
@@ -54,7 +62,7 @@ export function AdminSidebar({ collapsed }: { collapsed: boolean }) {
           <div className="adminBrandText">
             <div className="adminBrandName">ServerlessShip</div>
             <div className="adminBrandMeta">
-              <span className="adminBrandPill">Console</span>
+              <span className="adminBrandPill">{copy.shell.sidebar.brandMeta}</span>
             </div>
           </div>
         </div>
@@ -66,12 +74,13 @@ export function AdminSidebar({ collapsed }: { collapsed: boolean }) {
           const active = isActive(pathname, item.href);
           const previousGroup = navItems[index - 1]?.group;
           const showGroup = previousGroup !== item.group;
+          const href = item.href === "/" ? "/" : buildDashboardHref(item.href, localeSearch, locale);
 
           return (
             <div key={item.href} className="adminNavGroup">
               {showGroup ? <div className="adminNavSection">{item.group}</div> : null}
               <Link
-                href={item.href}
+                href={href}
                 className={`adminNavLink ${active ? "active" : ""} ${collapsed ? "collapsed" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
@@ -86,6 +95,26 @@ export function AdminSidebar({ collapsed }: { collapsed: boolean }) {
           );
         })}
       </nav>
+
+      <div className="adminSidebarFooter">
+        <div className="adminLocaleLabel">{copy.shell.sidebar.languageLabel}</div>
+        <div className="adminLocaleSwitch" role="group" aria-label={copy.shell.sidebar.languageLabel}>
+          <Link
+            href={buildDashboardHref(pathname, localeSearch, "zh")}
+            className={`adminLocaleButton ${locale === "zh" ? "active" : ""}`}
+            aria-current={locale === "zh" ? "page" : undefined}
+          >
+            {copy.shell.sidebar.languageOptions.zh}
+          </Link>
+          <Link
+            href={buildDashboardHref(pathname, localeSearch, "en")}
+            className={`adminLocaleButton ${locale === "en" ? "active" : ""}`}
+            aria-current={locale === "en" ? "page" : undefined}
+          >
+            {copy.shell.sidebar.languageOptions.en}
+          </Link>
+        </div>
+      </div>
 
     </aside>
   );
