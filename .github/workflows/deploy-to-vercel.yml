@@ -18,8 +18,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+      - name: Ensure Vercel CLI
+        run: |
+          if command -v vercel >/dev/null 2>&1; then
+            echo "Vercel CLI already installed: $(vercel --version)"
+          else
+            npm install -g vercel@latest
+          fi
 
       - name: Verify Vercel secrets
         run: |
