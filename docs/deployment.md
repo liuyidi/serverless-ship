@@ -62,6 +62,8 @@ project yet.
 
 If `SERVERLESSSHIP_RELEASE_URL` is missing, the workflow falls back to the production URL directly.
 
+When calling `/api/releases`, the `project` field is the project name that will be written to `projects.slug` and `projects.name`. It is not populated by GitHub automatically; your workflow or caller must set it explicitly.
+
 ### GitHub webhook mode
 
 Only configure this if you decide to send GitHub repository webhook events directly into ServerlessShip.

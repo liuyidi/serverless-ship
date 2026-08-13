@@ -22,7 +22,7 @@ function supabaseHeaders() {
   };
 }
 
-async function upsertProject() {
+async function upsertProject(projectName: string) {
   const config = supabaseHeaders();
   if (!config) return null;
 
@@ -31,8 +31,8 @@ async function upsertProject() {
     headers: config.headers,
     body: JSON.stringify([
       {
-        slug: config.projectSlug,
-        name: config.projectSlug,
+        slug: projectName,
+        name: projectName,
         repository: config.githubRepository,
       },
     ]),
@@ -54,7 +54,8 @@ export async function recordRelease(input: ReleaseCardInput, status: string) {
   const config = supabaseHeaders();
   if (!config) return null;
 
-  const project = await upsertProject();
+  const projectName = input.project.trim() || config.projectSlug;
+  const project = await upsertProject(projectName);
   if (!project) return null;
 
   const response = await fetch(`${config.baseUrl}/rest/v1/releases`, {
