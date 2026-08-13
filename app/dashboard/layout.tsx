@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "../base.css";
 import "./globals.css";
 import { AdminShell } from "@/app/dashboard/admin-shell";
@@ -12,7 +13,9 @@ export default function AdminLayout({ children }: Readonly<{ children: React.Rea
   return (
     <html lang="en">
       <body>
-        <AdminShell>{children}</AdminShell>
+        <Suspense fallback={<div className="adminShell" />}>
+          <AdminShell>{children}</AdminShell>
+        </Suspense>
       </body>
     </html>
   );
