@@ -8,6 +8,7 @@ ServerlessShip is a lightweight serverless service for minibot deployment notifi
 
 The landing page is bilingual and centers the delivery loop:
 
+
 - User
 - GitHub
 - GitHub Actions
