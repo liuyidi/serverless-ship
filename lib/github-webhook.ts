@@ -18,8 +18,20 @@ export type GithubReleaseEvent = {
     conclusion?: string;
     name?: string;
     head_branch?: string;
+    head_sha?: string;
   };
 };
+
+function formatWorkflowVersion(workflowRun: NonNullable<GithubReleaseEvent["workflow_run"]>) {
+  const branch = workflowRun.head_branch?.trim();
+  const sha = workflowRun.head_sha?.trim();
+
+  if (branch && sha) {
+    return `${branch}-${sha}`;
+  }
+
+  return branch ?? sha ?? "GitHub workflow";
+}
 
 export function verifyGithubSignature(body: string, signature256: string | null) {
   const secret = getEnv().githubWebhookSecret;
@@ -55,11 +67,9 @@ export function toReleaseNotification(event: GithubReleaseEvent): ReleaseCardInp
     return null;
   }
 
-  const workflowName = workflowRun.name ?? workflowRun.head_branch ?? "GitHub workflow";
-
   return {
     project: getEnv().projectSlug,
-    version: workflowName,
+    version: formatWorkflowVersion(workflowRun),
     tag: null,
     repository,
     releaseUrl: null,
