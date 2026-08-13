@@ -264,6 +264,196 @@
   margin-top: 16px;
 }
 
+.statusLoadingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.statusLoadingWide {
+  grid-column: 1 / -1;
+}
+
+.statusSkeletonIcon,
+.statusSkeletonLine,
+.adminLoadingLine,
+.adminLoadingPill,
+.adminLoadingCard,
+.adminLoadingBlock,
+.adminLoadingButton,
+.adminLoadingInput,
+.adminLoadingTableHeader,
+.adminLoadingTableRow {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.statusSkeletonIcon {
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.statusSkeletonBlock {
+  display: grid;
+  gap: 10px;
+  flex: 1;
+}
+
+.statusSkeletonLine {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.statusSkeletonLineShort {
+  width: 42%;
+}
+
+.statusSkeletonStack {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.statusErrorCard {
+  display: grid;
+  gap: 16px;
+}
+
+.adminLoadingPage {
+  gap: 16px;
+}
+
+.adminLoadingStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  min-width: min(540px, 100%);
+}
+
+.adminLoadingCard {
+  min-height: 98px;
+  border-radius: 16px;
+}
+
+.adminLoadingLine {
+  height: 14px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.adminLoadingLineShort {
+  width: 42%;
+}
+
+.adminLoadingLineWide {
+  width: 72%;
+}
+
+.adminLoadingPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.adminLoadingPill {
+  width: 88px;
+  height: 26px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.adminLoadingBlock {
+  display: grid;
+  gap: 10px;
+  width: min(380px, 100%);
+}
+
+.adminLoadingButton {
+  width: 132px;
+  height: 36px;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.adminLoadingButtonSecondary {
+  width: 98px;
+}
+
+.adminLoadingForm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px 20px 20px;
+}
+
+.adminLoadingInput {
+  height: 40px;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.adminLoadingActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.adminLoadingTable {
+  display: grid;
+}
+
+.adminLoadingTableHeader {
+  height: 48px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+}
+
+.adminLoadingTableRow {
+  height: 68px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.65) 25%, rgba(241, 245, 249, 0.98) 37%, rgba(226, 232, 240, 0.65) 63%);
+  background-size: 400% 100%;
+  animation: loadingShimmer 1.25s ease-in-out infinite;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+@keyframes loadingShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
 @media (max-width: 820px) {
   .hero,
   .sectionCard,
