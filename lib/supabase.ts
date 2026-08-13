@@ -22,18 +22,18 @@ function supabaseHeaders() {
   };
 }
 
-async function upsertProject(projectName: string) {
+async function upsertProject(projectName: string, repository: string) {
   const config = supabaseHeaders();
   if (!config) return null;
 
-  const response = await fetch(`${config.baseUrl}/rest/v1/projects?on_conflict=slug`, {
+  const response = await fetch(`${config.baseUrl}/rest/v1/projects?on_conflict=repository`, {
     method: "POST",
     headers: config.headers,
     body: JSON.stringify([
       {
         slug: projectName,
         name: projectName,
-        repository: config.githubRepository,
+        repository,
       },
     ]),
   });
@@ -55,7 +55,8 @@ export async function recordRelease(input: ReleaseCardInput, status: string) {
   if (!config) return null;
 
   const projectName = input.project.trim() || config.projectSlug;
-  const project = await upsertProject(projectName);
+  const repository = input.repository.trim() || config.githubRepository;
+  const project = await upsertProject(projectName, repository);
   if (!project) return null;
 
   const response = await fetch(`${config.baseUrl}/rest/v1/releases`, {

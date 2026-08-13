@@ -8,19 +8,19 @@ test("recordRelease prefers the request project name over PROJECT_SLUG", () => {
   const source = readFileSync(sourcePath, "utf8");
 
   assert.ok(
-    source.includes("async function upsertProject(projectName: string)"),
-    "expected project name to be passed into the project upsert helper",
+    source.includes("async function upsertProject(projectName: string, repository: string)"),
+    "expected project name and repository to be passed into the project upsert helper",
   );
   assert.ok(
-    source.includes("slug: projectName"),
-    "expected project slug to come from the request project name",
+    source.includes("on_conflict=repository"),
+    "expected projects to be upserted by repository",
   );
   assert.ok(
     source.includes("name: projectName"),
     "expected project name to come from the request project name",
   );
   assert.ok(
-    source.includes("const projectName = input.project.trim() || config.projectSlug;"),
-    "expected request project name to fall back to PROJECT_SLUG when missing",
+    source.includes("repository = input.repository.trim() || config.githubRepository;"),
+    "expected request repository to fall back to GITHUB_REPOSITORY when missing",
   );
 });
