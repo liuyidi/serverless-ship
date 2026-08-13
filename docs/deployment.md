@@ -62,7 +62,7 @@ project yet.
 
 If `SERVERLESSSHIP_RELEASE_URL` is missing, the workflow falls back to the production URL directly.
 
-When calling `/api/releases`, the `project` field is the project name that will be written to `projects.slug` and `projects.name`. The `repository` field is the stable identity for upserting the project row. Neither field is populated by GitHub automatically; your workflow or caller must set them explicitly.
+When calling `/api/releases`, the `project` field is the display name that will be written to `projects.name`. The `repository` field is the stable identity for upserting the project row, and the app derives `projects.slug` from that repository value. Neither field is populated by GitHub automatically; your workflow or caller must set them explicitly.
 
 ### GitHub webhook mode
 

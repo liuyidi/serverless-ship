@@ -20,6 +20,10 @@ test("recordRelease prefers the request project name over PROJECT_SLUG", () => {
     "expected project name to come from the request project name",
   );
   assert.ok(
+    source.includes("slug: repository"),
+    "expected project slug to come from the repository identity",
+  );
+  assert.ok(
     source.includes("repository = input.repository.trim() || config.githubRepository;"),
     "expected request repository to fall back to GITHUB_REPOSITORY when missing",
   );

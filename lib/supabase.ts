@@ -31,7 +31,7 @@ async function upsertProject(projectName: string, repository: string) {
     headers: config.headers,
     body: JSON.stringify([
       {
-        slug: projectName,
+        slug: repository,
         name: projectName,
         repository,
       },
