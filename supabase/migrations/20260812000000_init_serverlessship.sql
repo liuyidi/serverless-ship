@@ -13,7 +13,7 @@ create table if not exists public.releases (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references public.projects(id) on delete cascade,
   version text not null,
-  tag text not null,
+  tag text,
   release_url text,
   workflow_url text,
   status text not null,
