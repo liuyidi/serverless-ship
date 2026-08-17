@@ -1,0 +1,22 @@
+name: ServerlessShip - serverless-ship
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify ServerlessShip
+        env:
+          SERVERLESSSHIP_URL: https://serverless-ship.liuyidi.me
+          SERVERLESSSHIP_TOKEN: ${{ secrets.SERVERLESSSHIP_TOKEN_SERVERLESS_SHIP }}
+        run: |
+          curl --fail-with-body -X POST "$SERVERLESSSHIP_URL/api/releases" \
+            -H "Authorization: Bearer $SERVERLESSSHIP_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"project":"serverless-ship","version":"${{ github.event.release.tag_name }}","tag":"${{ github.event.release.tag_name }}","repository":"${{ github.repository }}","releaseUrl":"${{ github.event.release.html_url }}","workflowUrl":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}","channel":"Vercel"}'
