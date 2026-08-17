@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { sendReleaseNotification } from "@/lib/feishu";
 import { toReleaseNotification, verifyGithubSignature } from "@/lib/github-webhook";
 import { recordDelivery, recordRelease, updateReleaseStatus } from "@/lib/supabase";
+import { getProjectTemplate } from "@/lib/templates";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
 
   try {
     releaseRecord = await recordRelease(notification, "pending");
-    const delivery = await sendReleaseNotification(notification);
+    const projectTemplate = await getProjectTemplate(notification.repository);
+    const delivery = await sendReleaseNotification(notification, projectTemplate?.template_config);
     if (releaseRecord?.id) {
       await recordDelivery(releaseRecord.id, "sent", null);
       await updateReleaseStatus(releaseRecord.id, "sent");

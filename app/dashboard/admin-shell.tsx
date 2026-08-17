@@ -28,6 +28,10 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
       return copy.shell.topbarTitles.deployments;
     }
 
+    if (pathname.startsWith("/dashboard/templates")) {
+      return copy.shell.topbarTitles.templates;
+    }
+
     return copy.shell.topbarTitles.overview;
   }, [copy.shell.topbarTitles, pathname]);
 

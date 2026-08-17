@@ -8,6 +8,7 @@ export type DashboardCopy = {
       overview: string;
       deployments: string;
       deploymentDetail: string;
+      templates: string;
       supabase: string;
     };
     sidebar: {
@@ -18,6 +19,7 @@ export type DashboardCopy = {
       };
       nav: {
         deployments: string;
+        templates: string;
         supabase: string;
         publicSite: string;
       };
@@ -115,6 +117,7 @@ export const dashboardCopy: Record<DashboardLocale, DashboardCopy> = {
         overview: "概览",
         deployments: "部署记录",
         deploymentDetail: "部署详情",
+        templates: "消息模板",
         supabase: "Supabase",
       },
       sidebar: {
@@ -125,6 +128,7 @@ export const dashboardCopy: Record<DashboardLocale, DashboardCopy> = {
         },
         nav: {
           deployments: "部署记录",
+          templates: "消息模板",
           supabase: "Supabase",
           publicSite: "公开站点",
         },
@@ -220,6 +224,7 @@ export const dashboardCopy: Record<DashboardLocale, DashboardCopy> = {
         overview: "Overview",
         deployments: "Deployments",
         deploymentDetail: "Deployment detail",
+        templates: "Message templates",
         supabase: "Supabase",
       },
       sidebar: {
@@ -230,6 +235,7 @@ export const dashboardCopy: Record<DashboardLocale, DashboardCopy> = {
         },
         nav: {
           deployments: "Deployments",
+          templates: "Message templates",
           supabase: "Supabase",
           publicSite: "Public site",
         },

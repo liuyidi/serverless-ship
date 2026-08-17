@@ -6,6 +6,7 @@ import {
   Database,
   ExternalLink,
   LayoutDashboard,
+  Palette,
 } from "lucide-react";
 import { dashboardCopy, type DashboardLocale, buildDashboardHref } from "@/lib/dashboard-copy";
 
@@ -37,6 +38,12 @@ export function AdminSidebar({
       href: "/dashboard/deployments",
       label: copy.shell.sidebar.nav.deployments,
       icon: BarChart3,
+    },
+    {
+      group: copy.shell.sidebar.groups.core,
+      href: "/dashboard/templates",
+      label: copy.shell.sidebar.nav.templates,
+      icon: Palette,
     },
     {
       group: copy.shell.sidebar.groups.core,

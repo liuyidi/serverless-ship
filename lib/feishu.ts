@@ -1,5 +1,6 @@
 import { getEnv } from "@/lib/env";
 import { buildFeishuInteractiveCard, buildReleaseCard, type ReleaseCardInput } from "@/lib/card";
+import type { TemplateConfig } from "@/lib/templates";
 
 type FeishuWebhookPayload = {
   msg_type: "text";
@@ -82,7 +83,7 @@ async function getTenantAccessToken() {
   return cachedTenantToken.token;
 }
 
-async function postFeishuAppMessage(input: ReleaseCardInput) {
+async function postFeishuAppMessage(input: ReleaseCardInput, template?: TemplateConfig) {
   const env = getEnv();
   const receiveIdType = env.feishuTargetIdType ?? "open_id";
   const receiveId = env.feishuTargetOpenId;
@@ -92,7 +93,7 @@ async function postFeishuAppMessage(input: ReleaseCardInput) {
   }
 
   const token = await getTenantAccessToken();
-  const content = buildFeishuInteractiveCard(input);
+  const content = buildFeishuInteractiveCard(input, template);
   const payload: FeishuInteractivePayload = {
     msg_type: "interactive",
     content: JSON.stringify(content),
@@ -121,9 +122,9 @@ async function postFeishuAppMessage(input: ReleaseCardInput) {
   }
 }
 
-export async function sendReleaseNotification(input: ReleaseCardInput) {
+export async function sendReleaseNotification(input: ReleaseCardInput, template?: TemplateConfig) {
   const env = getEnv();
-  const card = buildReleaseCard(input);
+  const card = buildReleaseCard(input, template);
 
   if (env.feishuWebhookUrl) {
     await postWebhook(env.feishuWebhookUrl, card);
@@ -131,7 +132,7 @@ export async function sendReleaseNotification(input: ReleaseCardInput) {
   }
 
   if (env.feishuAppId && env.feishuAppSecret) {
-    await postFeishuAppMessage(input);
+    await postFeishuAppMessage(input, template);
     return { transport: "app" as const };
   }
 

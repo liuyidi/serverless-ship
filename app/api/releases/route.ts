@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { sendReleaseNotification } from "@/lib/feishu";
 import type { ReleaseCardInput } from "@/lib/card";
 import { recordDelivery, recordRelease, updateReleaseStatus } from "@/lib/supabase";
+import { getProjectTemplate, hashNotifyToken } from "@/lib/templates";
 
 export async function POST(request: Request) {
   let payload: ReleaseCardInput;
@@ -18,9 +19,15 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, error: "missing required fields" }, { status: 400 });
   }
 
+  const projectTemplate = await getProjectTemplate(payload.repository);
+  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+  if (projectTemplate?.notify_token_hash && (!token || hashNotifyToken(token) !== projectTemplate.notify_token_hash)) {
+    return Response.json({ ok: false, error: "invalid project token" }, { status: 401 });
+  }
+
   try {
     releaseRecord = await recordRelease(payload, "pending");
-    const delivery = await sendReleaseNotification(payload);
+    const delivery = await sendReleaseNotification(payload, projectTemplate?.template_config);
     if (releaseRecord?.id) {
       await recordDelivery(releaseRecord.id, "sent", null);
       await updateReleaseStatus(releaseRecord.id, "sent");

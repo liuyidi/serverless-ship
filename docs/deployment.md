@@ -41,6 +41,11 @@ supabase link --project-ref sxzqroltcqtzrvnhlufz
 supabase db push
 ```
 
+After adding project-level message templates, also apply
+`20260817000000_add_project_templates.sql`. It adds the stored theme settings
+and hashed per-project notification tokens required by `/api/templates` and
+authenticated calls to `/api/releases`.
+
 RLS is enabled in a follow-up migration, but the current access pattern stays
 server-side only through the Supabase service role. That keeps the tables
 protected until a future user-facing policy is needed.
@@ -63,6 +68,12 @@ project yet.
 If `SERVERLESSSHIP_RELEASE_URL` is missing, the workflow falls back to the production URL directly.
 
 When calling `/api/releases`, the `project` field is the display name that will be written to `projects.name`. The `repository` field is the stable identity for upserting the project row, and the app derives `projects.slug` from that repository value. Neither field is populated by GitHub automatically; your workflow or caller must set them explicitly.
+
+For projects created in the Message templates console, save the displayed
+one-time token in that repository as the `SERVERLESSSHIP_TOKEN` GitHub Actions
+secret and include it as `Authorization: Bearer $SERVERLESSSHIP_TOKEN`. The
+server stores only a hash of this token and uses the repository name to find
+the associated message theme.
 
 ### GitHub webhook mode
 
