@@ -10,6 +10,9 @@ export type Env = {
   feishuTargetIdType: string | null;
   supabaseUrl: string | null;
   supabaseServiceRoleKey: string | null;
+  githubAppId: string | null;
+  githubAppPrivateKey: string | null;
+  githubAppInstallationId: string | null;
 };
 
 function read(name: string): string | null {
@@ -30,5 +33,8 @@ export function getEnv(): Env {
     feishuTargetIdType: read("FEISHU_TARGET_ID_TYPE"),
     supabaseUrl: read("SUPABASE_URL"),
     supabaseServiceRoleKey: read("SUPABASE_SERVICE_ROLE_KEY"),
+    githubAppId: read("GITHUB_APP_ID"),
+    githubAppPrivateKey: read("GITHUB_APP_PRIVATE_KEY"),
+    githubAppInstallationId: read("GITHUB_APP_INSTALLATION_ID"),
   };
 }

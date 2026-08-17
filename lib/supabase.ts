@@ -22,16 +22,16 @@ function supabaseHeaders() {
   };
 }
 
-async function upsertProject(projectName: string, repository: string) {
+async function upsertProject(projectName: string, repository: string, slug: string) {
   const config = supabaseHeaders();
   if (!config) return null;
 
-  const response = await fetch(`${config.baseUrl}/rest/v1/projects?on_conflict=repository`, {
+  const response = await fetch(`${config.baseUrl}/rest/v1/projects?on_conflict=slug`, {
     method: "POST",
     headers: config.headers,
     body: JSON.stringify([
       {
-        slug: repository,
+        slug,
         name: projectName,
         repository,
       },
@@ -50,13 +50,14 @@ async function upsertProject(projectName: string, repository: string) {
   return rows[0] ?? null;
 }
 
-export async function recordRelease(input: ReleaseCardInput, status: string) {
+export async function recordRelease(input: ReleaseCardInput, status: string, projectSlug?: string) {
   const config = supabaseHeaders();
   if (!config) return null;
 
   const projectName = input.project.trim() || config.projectSlug;
   const repository = input.repository.trim() || config.githubRepository;
-  const project = await upsertProject(projectName, repository);
+  const slug = projectSlug ?? repository.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const project = await upsertProject(projectName, repository, slug);
   if (!project) return null;
 
   const response = await fetch(`${config.baseUrl}/rest/v1/releases`, {

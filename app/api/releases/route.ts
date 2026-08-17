@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { sendReleaseNotification } from "@/lib/feishu";
 import type { ReleaseCardInput } from "@/lib/card";
 import { recordDelivery, recordRelease, updateReleaseStatus } from "@/lib/supabase";
-import { getProjectTemplate, hashNotifyToken } from "@/lib/templates";
+import { getProjectTemplateByToken } from "@/lib/templates";
 
 export async function POST(request: Request) {
   let payload: ReleaseCardInput;
@@ -19,14 +19,17 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, error: "missing required fields" }, { status: 400 });
   }
 
-  const projectTemplate = await getProjectTemplate(payload.repository);
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
-  if (projectTemplate?.notify_token_hash && (!token || hashNotifyToken(token) !== projectTemplate.notify_token_hash)) {
+  if (!token) {
+    return Response.json({ ok: false, error: "project token is required" }, { status: 401 });
+  }
+  const projectTemplate = await getProjectTemplateByToken(token);
+  if (!projectTemplate || projectTemplate.repository !== payload.repository) {
     return Response.json({ ok: false, error: "invalid project token" }, { status: 401 });
   }
 
   try {
-    releaseRecord = await recordRelease(payload, "pending");
+    releaseRecord = await recordRelease({ ...payload, project: projectTemplate.name }, "pending", projectTemplate.slug);
     const delivery = await sendReleaseNotification(payload, projectTemplate?.template_config);
     if (releaseRecord?.id) {
       await recordDelivery(releaseRecord.id, "sent", null);
@@ -37,7 +40,7 @@ export async function POST(request: Request) {
     const message = error instanceof Error ? error.message : "unknown error";
     try {
       if (!releaseRecord) {
-        releaseRecord = await recordRelease(payload, "failed");
+        releaseRecord = await recordRelease({ ...payload, project: projectTemplate.name }, "failed", projectTemplate.slug);
       }
       if (releaseRecord?.id) {
         await recordDelivery(releaseRecord.id, "failed", message);

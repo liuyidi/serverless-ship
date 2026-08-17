@@ -544,6 +544,10 @@
 .templateSaveButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; margin: 0 20px 20px; padding: 0 14px; border: 0; border-radius: 10px; background: #111827; color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .templateSaveButton:disabled { opacity: .6; cursor: wait; }
 .templateTokenHint { margin: 0 20px 12px; color: #15803d; font-size: 12px; font-weight: 700; }
+.templateConnectionNote { margin: 0 20px 12px; color: #475569; font-size: 12px; line-height: 1.5; word-break: break-word; }
+.templateConnectButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; margin: 0 0 20px 20px; padding: 0 14px; border: 1px solid rgba(15,23,42,.12); border-radius: 10px; background: #fff; color: #0f172a; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.templateConnectButton:hover { background: #f8fafc; }
+.templateConnectButton:disabled { opacity: .6; cursor: wait; }
 .templatePreviewPanel { overflow: hidden; }
 .templatePreviewBadge { display: inline-flex; align-items: center; gap: 6px; color: #71717a; font-size: 12px; font-weight: 700; }
 .templatePreviewStage { display: grid; place-items: center; min-height: 440px; padding: 36px; }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Check, ExternalLink, Eye, Link2, Palette, Plus, Save, SlidersHorizontal } from "lucide-react";
+import { Check, ExternalLink, Eye, GitBranch, Link2, Palette, Plus, Save, SlidersHorizontal } from "lucide-react";
 
 type ProjectKey = string;
 type Preset = "ember" | "ocean" | "mono";
@@ -78,6 +78,8 @@ export default function TemplatesPage() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [tokenLast4, setTokenLast4] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const [connectionMessage, setConnectionMessage] = useState<string | null>(null);
   const config = configs[project] ?? defaults["mini-auth"];
   const projectData = projectCatalog[project] ?? projects["mini-auth"];
   const preset = presets[config.preset];
@@ -122,7 +124,7 @@ export default function TemplatesPage() {
   const save = async () => {
     setSaving(true);
     try {
-      const response = await fetch("/api/templates", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: projectData.name, repository: projectData.repo, config, rotateToken: false }) });
+      const response = await fetch("/api/templates", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: projectData.name, repository: projectData.repo, slug: project, config, rotateToken: false }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "保存失败");
       setTokenLast4(data.project?.notify_token_last4 ?? null);
@@ -133,6 +135,23 @@ export default function TemplatesPage() {
     } finally {
       setSaving(false);
       window.setTimeout(() => setSaved(false), 2200);
+    }
+  };
+
+  const connectGithub = async () => {
+    setConnecting(true);
+    setConnectionMessage(null);
+    try {
+      await save();
+      const response = await fetch("/api/templates/connect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ slug: project, channel: projectData.channel }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "GitHub 连接失败");
+      setTokenLast4(data.tokenLast4);
+      setConnectionMessage(`已写入 ${data.secretName} 和 ${data.workflowPath}`);
+    } catch (error) {
+      setConnectionMessage(error instanceof Error ? error.message : "GitHub 连接失败");
+    } finally {
+      setConnecting(false);
     }
   };
 
@@ -190,6 +209,8 @@ export default function TemplatesPage() {
           </div>
 
           {tokenLast4 ? <div className="templateTokenHint">已连接项目密钥 ····{tokenLast4}</div> : null}
+          {connectionMessage ? <div className="templateConnectionNote">{connectionMessage}</div> : null}
+          <button type="button" className="templateConnectButton" onClick={connectGithub} disabled={connecting}><GitBranch size={16} aria-hidden="true" />{connecting ? "正在连接 GitHub…" : "连接 GitHub"}</button>
           <button type="button" className="templateSaveButton" onClick={save} disabled={saving}><Save size={16} aria-hidden="true" />{saving ? "保存中…" : saved ? "已保存" : "保存此项目模板"}</button>
         </section>
 

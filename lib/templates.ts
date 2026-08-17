@@ -52,6 +52,23 @@ export async function getProjectTemplate(repository: string) {
   return ((await response.json()) as (ProjectTemplate & { notify_token_hash: string | null })[])[0] ?? null;
 }
 
+export async function getProjectTemplateBySlug(slug: string) {
+  return getProjectTemplateByField("slug", slug);
+}
+
+export async function getProjectTemplateByToken(token: string) {
+  return getProjectTemplateByField("notify_token_hash", hashNotifyToken(token));
+}
+
+async function getProjectTemplateByField(field: "slug" | "notify_token_hash", value: string) {
+  const client = config();
+  if (!client) return null;
+  const params = new URLSearchParams({ select: "slug,name,repository,template_config,notify_token_hash,notify_token_last4", [field]: `eq.${value}`, limit: "1" });
+  const response = await fetch(`${client.baseUrl}/rest/v1/projects?${params}`, { headers: client.headers, cache: "no-store" });
+  if (!response.ok) throw new Error(`Failed to load project template: ${response.status}`);
+  return ((await response.json()) as (ProjectTemplate & { notify_token_hash: string | null })[])[0] ?? null;
+}
+
 export async function saveProjectTemplate(input: { name: string; repository: string; config: TemplateConfig; slug?: string; rotateToken?: boolean }) {
   const client = config();
   if (!client) throw new Error("Supabase is not configured");
@@ -59,7 +76,7 @@ export async function saveProjectTemplate(input: { name: string; repository: str
   const token = input.rotateToken === false ? null : createNotifyToken();
   const row: Record<string, unknown> = { slug, name: input.name.trim(), repository: input.repository.trim(), template_config: input.config };
   if (token) { row.notify_token_hash = hashNotifyToken(token); row.notify_token_last4 = token.slice(-4); }
-  const response = await fetch(`${client.baseUrl}/rest/v1/projects?on_conflict=repository`, { method: "POST", headers: client.headers, body: JSON.stringify([row]) });
+  const response = await fetch(`${client.baseUrl}/rest/v1/projects?on_conflict=slug`, { method: "POST", headers: client.headers, body: JSON.stringify([row]) });
   if (!response.ok) throw new Error(`Failed to save project template: ${response.status}`);
   const saved = ((await response.json()) as ProjectTemplate[])[0];
   return { project: saved, token };
