@@ -1,4 +1,4 @@
-name: ServerlessShip - serverless-ship
+name: "ServerlessShip - serverless-ship"
 
 on:
   release:
@@ -13,10 +13,11 @@ jobs:
     steps:
       - name: Notify ServerlessShip
         env:
-          SERVERLESSSHIP_URL: https://serverless-ship.liuyidi.me
+          SERVERLESSSHIP_URL: "https://serverless-ship.liuyidi.me/api/releases"
           SERVERLESSSHIP_TOKEN: ${{ secrets.SERVERLESSSHIP_TOKEN_SERVERLESS_SHIP }}
+          SERVERLESSSHIP_PAYLOAD: eyJwcm9qZWN0Ijoic2VydmVybGVzcy1zaGlwIiwidmVyc2lvbiI6IiR7eyBnaXRodWIuZXZlbnQucmVsZWFzZS50YWdfbmFtZSB9fSIsInRhZyI6IiR7eyBnaXRodWIuZXZlbnQucmVsZWFzZS50YWdfbmFtZSB9fSIsInJlcG9zaXRvcnkiOiIke3sgZ2l0aHViLnJlcG9zaXRvcnkgfX0iLCJyZWxlYXNlVXJsIjoiJHt7IGdpdGh1Yi5ldmVudC5yZWxlYXNlLmh0bWxfdXJsIH19Iiwid29ya2Zsb3dVcmwiOiIke3sgZ2l0aHViLnNlcnZlcl91cmwgfX0vJHt7IGdpdGh1Yi5yZXBvc2l0b3J5IH19L2FjdGlvbnMvcnVucy8ke3sgZ2l0aHViLnJ1bl9pZCB9fSIsImNoYW5uZWwiOiJWZXJjZWwifQ==
         run: |
-          curl --fail-with-body -X POST "$SERVERLESSSHIP_URL/api/releases" \
+          curl --fail-with-body -X POST "$SERVERLESSSHIP_URL" \
             -H "Authorization: Bearer $SERVERLESSSHIP_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"project":"serverless-ship","version":"${{ github.event.release.tag_name }}","tag":"${{ github.event.release.tag_name }}","repository":"${{ github.repository }}","releaseUrl":"${{ github.event.release.html_url }}","workflowUrl":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}","channel":"Vercel"}'
+            --data-raw "$(printf '%s' "$SERVERLESSSHIP_PAYLOAD" | base64 --decode)"
