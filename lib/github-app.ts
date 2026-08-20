@@ -4,16 +4,32 @@ import { getEnv } from "@/lib/env";
 
 const API = "https://api.github.com";
 
+function githubAppPrivateKey() {
+  const value = getEnv().githubAppPrivateKey;
+  if (!value) throw new Error("GITHUB_APP_PRIVATE_KEY is not configured");
+
+  const unquoted = value.trim().replace(/^(['"])(.*)\1$/, "$2");
+  const pem = unquoted.replace(/\\n/g, "\n");
+  const decoded = Buffer.from(pem, "base64").toString("utf8").trim();
+  const key = pem.includes("-----BEGIN") ? pem : decoded;
+
+  try {
+    return crypto.createPrivateKey({ key, format: "pem" });
+  } catch {
+    throw new Error("GITHUB_APP_PRIVATE_KEY must be a GitHub App PEM private key, with literal newlines, escaped \\n characters, or Base64-encoded PEM content");
+  }
+}
+
 function appJwt() {
   const env = getEnv();
-  if (!env.githubAppId || !env.githubAppPrivateKey) throw new Error("GitHub App is not configured");
+  if (!env.githubAppId) throw new Error("GITHUB_APP_ID is not configured");
   const now = Math.floor(Date.now() / 1000);
   const encode = (value: object) => Buffer.from(JSON.stringify(value)).toString("base64url");
   const unsigned = `${encode({ alg: "RS256", typ: "JWT" })}.${encode({ iat: now - 60, exp: now + 540, iss: env.githubAppId })}`;
   const signer = crypto.createSign("RSA-SHA256");
   signer.update(unsigned);
   signer.end();
-  return `${unsigned}.${signer.sign(env.githubAppPrivateKey.replace(/\\n/g, "\n")).toString("base64url")}`;
+  return `${unsigned}.${signer.sign(githubAppPrivateKey()).toString("base64url")}`;
 }
 
 async function installationToken() {
@@ -31,13 +47,30 @@ async function github(path: string, init: RequestInit = {}) {
 }
 
 function repositoryParts(repository: string) {
-  const [owner, repo, ...extra] = repository.split("/");
+  const [owner, repo, ...extra] = repository.trim().split("/");
   if (!owner || !repo || extra.length) throw new Error("repository must be owner/name");
   return { owner, repo };
 }
 
+export function notificationSecretName(slug: string) {
+  return `SERVERLESSSHIP_TOKEN_${slug.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}`;
+}
+
 export function notificationWorkflow(slug: string, projectName: string, channel: string) {
-  return `name: ServerlessShip - ${projectName}\n\non:\n  release:\n    types: [published]\n\npermissions:\n  contents: read\n\njobs:\n  notify:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Notify ServerlessShip\n        env:\n          SERVERLESSSHIP_URL: https://serverless-ship.liuyidi.me\n          SERVERLESSSHIP_TOKEN: \${{ secrets.SERVERLESSSHIP_TOKEN_${slug.toUpperCase().replace(/[^A-Z0-9]+/g, "_")} }}\n        run: |\n          curl --fail-with-body -X POST "$SERVERLESSSHIP_URL/api/releases" \\\n            -H "Authorization: Bearer $SERVERLESSSHIP_TOKEN" \\\n            -H "Content-Type: application/json" \\\n            -d '{"project":"${projectName}","version":"\${{ github.event.release.tag_name }}","tag":"\${{ github.event.release.tag_name }}","repository":"\${{ github.repository }}","releaseUrl":"\${{ github.event.release.html_url }}","workflowUrl":"\${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}","channel":"${channel}"}'\n`;
+  const serviceUrl = `${getEnv().appBaseUrl.replace(/\/$/, "")}/api/releases`;
+  const secretName = notificationSecretName(slug);
+  const payload = JSON.stringify({
+    project: projectName,
+    version: "${{ github.event.release.tag_name }}",
+    tag: "${{ github.event.release.tag_name }}",
+    repository: "${{ github.repository }}",
+    releaseUrl: "${{ github.event.release.html_url }}",
+    workflowUrl: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+    channel,
+  });
+  const encodedPayload = Buffer.from(payload).toString("base64");
+
+  return `name: ${JSON.stringify(`ServerlessShip - ${projectName}`)}\n\non:\n  release:\n    types: [published]\n\npermissions:\n  contents: read\n\njobs:\n  notify:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Notify ServerlessShip\n        env:\n          SERVERLESSSHIP_URL: ${JSON.stringify(serviceUrl)}\n          SERVERLESSSHIP_TOKEN: \${{ secrets.${secretName} || secrets.SERVERLESSSHIP_TOKEN }}\n          SERVERLESSSHIP_PAYLOAD: ${encodedPayload}\n        run: |\n          curl --fail-with-body -X POST \"$SERVERLESSSHIP_URL\" \\\n            -H \"Authorization: Bearer $SERVERLESSSHIP_TOKEN\" \\\n            -H \"Content-Type: application/json\" \\\n            --data-raw \"$(printf '%s' \"$SERVERLESSSHIP_PAYLOAD\" | base64 --decode)\"\n`;
 }
 
 export async function connectGithubProject(input: { repository: string; slug: string; projectName: string; channel: string; notifyToken: string }) {
@@ -47,7 +80,7 @@ export async function connectGithubProject(input: { repository: string; slug: st
   const key = (await publicKey.json()) as { key_id: string; key: string };
   await sodium.ready;
   const encrypted = sodium.to_base64(sodium.crypto_box_seal(input.notifyToken, sodium.from_base64(key.key, sodium.base64_variants.ORIGINAL)), sodium.base64_variants.ORIGINAL);
-  const secretName = `SERVERLESSSHIP_TOKEN_${input.slug.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}`;
+  const secretName = notificationSecretName(input.slug);
   const secret = await github(`/repos/${owner}/${repo}/actions/secrets/${secretName}`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ encrypted_value: encrypted, key_id: key.key_id }) });
   if (!secret.ok) throw new Error(`GitHub secret write failed: ${secret.status}`);
 

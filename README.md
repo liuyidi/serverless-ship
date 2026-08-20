@@ -48,7 +48,8 @@ It expects these secrets:
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
-For release notifications from another repo, call `POST /api/releases` with the release payload.
+For release notifications from another repo, call `POST /api/releases` with the release payload and the per-project bearer token.
+If the `Authorization: Bearer <token>` header is missing, the API returns `401 project token is required`.
 
 ## Docs
 

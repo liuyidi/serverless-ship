@@ -15,6 +15,9 @@ This page is the final production checklist for ServerlessShip.
 | `SUPABASE_ANON_KEY` | Vercel Project Settings > Environment Variables | Supabase Dashboard > Settings > API Keys | Optional for future public client access |
 | `GITHUB_WEBHOOK_SECRET` | Vercel Project Settings > Environment Variables | You generate it yourself | Only needed if you enable a GitHub repository webhook to `/api/webhooks/github` |
 | `GITHUB_REPOSITORY` | Vercel Project Settings > Environment Variables | Manual | Example: `liuyidi/minibot` |
+| `GITHUB_APP_ID` | Vercel Project Settings > Environment Variables | GitHub App settings | Required for the dashboard to connect a repository automatically |
+| `GITHUB_APP_PRIVATE_KEY` | Vercel Project Settings > Environment Variables | GitHub App private key | Use the downloaded PEM exactly; literal newlines, escaped `\n`, or Base64-encoded PEM are supported |
+| `GITHUB_APP_INSTALLATION_ID` | Vercel Project Settings > Environment Variables | GitHub App installation URL | Installation must have Actions secrets and repository contents write permissions |
 | `FEISHU_APP_ID` | Vercel Project Settings > Environment Variables | Feishu Open Platform > App details | App ID from your self-built app |
 | `FEISHU_APP_SECRET` | Vercel Project Settings > Environment Variables | Feishu Open Platform > App details | App secret from your self-built app |
 | `FEISHU_TARGET_OPEN_ID` | Vercel Project Settings > Environment Variables | Feishu Open Platform / API lookup | Required for direct user delivery via Feishu app message |
@@ -64,16 +67,39 @@ project yet.
 | Variable | Where to set | Value source | Notes |
 |---|---|---|---|
 | `SERVERLESSSHIP_RELEASE_URL` | `minibot` repository Variables | Manual | Recommended default: `https://serverless-ship.liuyidi.me/api/releases` |
+| `SERVERLESSSHIP_TOKEN_<PROJECT_SLUG>` | `minibot` repository Secrets | Auto-created by ServerlessShip when you connect a project | Preferred secret name for authenticated `POST /api/releases` calls |
+| `SERVERLESSSHIP_TOKEN` | `minibot` repository Secrets | Manual legacy fallback | Still supported by the generated workflow if the project-specific secret is not present |
 
 If `SERVERLESSSHIP_RELEASE_URL` is missing, the workflow falls back to the production URL directly.
+If the request reaches `/api/releases` without `Authorization: Bearer <token>`, the API returns `401 project token is required`.
 
 When calling `/api/releases`, the `project` field is the display name that will be written to `projects.name`. The `repository` field is the stable identity for upserting the project row, and the app derives `projects.slug` from that repository value. Neither field is populated by GitHub automatically; your workflow or caller must set them explicitly.
 
-For projects created in the Message templates console, save the displayed
-one-time token in that repository as the `SERVERLESSSHIP_TOKEN` GitHub Actions
-secret and include it as `Authorization: Bearer $SERVERLESSSHIP_TOKEN`. The
-server stores only a hash of this token and uses the repository name to find
-the associated message theme.
+Minimal authenticated example:
+
+```bash
+curl --fail-with-body -X POST "https://serverless-ship.liuyidi.me/api/releases" \
+  -H "Authorization: Bearer $SERVERLESSSHIP_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project": "minibot desktop",
+    "version": "1.0.0-beta.3",
+    "tag": "desktop-v1.0.0-beta.3",
+    "repository": "liuyidi/minibot",
+    "releaseUrl": "https://github.com/liuyidi/minibot/releases/tag/desktop-v1.0.0-beta.3",
+    "workflowUrl": "https://github.com/liuyidi/minibot/actions/runs/123",
+    "channel": "GitHub Release"
+  }'
+```
+
+For projects created through **Create and connect GitHub**, ServerlessShip
+creates a repository Actions secret named
+`SERVERLESSSHIP_TOKEN_<PROJECT_SLUG>` and writes
+`.github/workflows/serverless-ship-<project-slug>.yml` automatically. The
+generated workflow also falls back to `SERVERLESSSHIP_TOKEN` for older repos.
+The server stores only a hash of this token and uses the repository name to
+find the associated message theme. Reconnecting an existing project updates
+both the secret and workflow.
 
 ### GitHub webhook mode
 
